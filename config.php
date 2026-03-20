@@ -34,9 +34,13 @@ if (mysqli_num_rows($check_admin_column) == 0) {
     mysqli_query($conn, "ALTER TABLE users ADD COLUMN is_admin TINYINT(1) DEFAULT 0");
 }
 
-// Set a default admin if none exists (using the first user as admin for initial setup)
-$check_admin = mysqli_query($conn, "SELECT id FROM users WHERE is_admin = 1");
-if (mysqli_num_rows($check_admin) == 0) {
-    mysqli_query($conn, "UPDATE users SET is_admin = 1 LIMIT 1");
+// Create a default admin account if it doesn't exist
+$admin_hp = '081234567890'; // Ganti dengan nomor HP admin
+$admin_pass = 'admin123'; // Ganti dengan password yang kuat
+$hashed_pass = password_hash($admin_pass, PASSWORD_DEFAULT);
+
+$check_admin_exist = mysqli_query($conn, "SELECT id FROM users WHERE nomor_hp = '$admin_hp'");
+if (mysqli_num_rows($check_admin_exist) == 0) {
+    mysqli_query($conn, "INSERT INTO users (nama_lengkap, tahun_alumni, nomor_hp, password, is_admin) VALUES ('Admin', 2000, '$admin_hp', '$hashed_pass', 1)");
 }
 ?>

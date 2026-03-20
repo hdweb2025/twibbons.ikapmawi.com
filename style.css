@@ -45,6 +45,20 @@ input:focus { border-color: #1a5c2e; box-shadow: 0 0 0 2px rgba(26, 92, 46, 0.1)
 }
 .btn-primary:hover { background: #134522; }
 
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-secondary:hover { background: #5a6268; }
+
 /* Canvas Area */
 .canvas-wrapper {
     margin: 20px 0;
