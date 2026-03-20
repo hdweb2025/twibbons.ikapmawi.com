@@ -26,7 +26,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 <body>
 <div class="container">
     <div class="header">
-        <img src="/assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
+        <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI">
         <h2><?php echo ($event) ? $event['name'] : 'Galeri Twibbon'; ?></h2>
     </div>
 
