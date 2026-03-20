@@ -16,8 +16,15 @@ if (canvas) {
     // Load template from the selected event
     const templateSrc = canvas.getAttribute('data-template');
     if (templateSrc) {
+        templateImg.crossOrigin = "anonymous"; // Hindari isu CORS jika perlu
         templateImg.src = templateSrc;
-        templateImg.onload = () => draw();
+        templateImg.onload = () => {
+            console.log("Template loaded:", templateSrc);
+            draw();
+        };
+        templateImg.onerror = () => {
+            console.error("Failed to load template:", templateSrc);
+        };
     }
 
     upload.addEventListener('change', (e) => {
@@ -109,5 +116,14 @@ if (canvas) {
         link.download = 'twibbon-ikapmawi.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
+
+        // Record usage in background
+        const eventId = canvas.getAttribute('data-event-id');
+        const formData = new FormData();
+        formData.append('event_id', eventId);
+        fetch('record_usage.php', {
+            method: 'POST',
+            body: formData
+        });
     });
 }

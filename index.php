@@ -53,7 +53,7 @@ if (isset($_SESSION['user'])) {
             <h3>Event: <?php echo $event['name']; ?></h3>
             <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Gunakan mouse wheel untuk zoom, drag untuk geser foto.</p>
             <div class="canvas-wrapper">
-                <canvas id="mainCanvas" width="1080" height="1080" data-template="<?php echo $event['template']; ?>"></canvas>
+                <canvas id="mainCanvas" width="1080" height="1080" data-template="<?php echo $event['template']; ?>" data-event-id="<?php echo $event['id']; ?>"></canvas>
             </div>
 
             <div class="controls">
@@ -61,6 +61,27 @@ if (isset($_SESSION['user'])) {
                 <label for="upload" class="btn-primary" style="display:block; margin-bottom:10px;">Pilih Foto</label>
                 <button id="download" class="btn-primary" style="width:100%; background:#3498db" disabled>Unduh Hasil</button>
                 <a href="index.php" style="display:block; margin-top:10px; color: #666; font-size: 12px; text-decoration: none;">Kembali ke Pilih Event</a>
+            </div>
+
+            <!-- Event Usage Statistics -->
+            <div class="usage-stats" style="margin-top: 30px; text-align: left; background: #f9f9f9; padding: 15px; border-radius: 8px; font-size: 14px;">
+                <?php
+                $current_event_id = $event['id'];
+                $usage_res = mysqli_query($conn, "SELECT users.nama_lengkap FROM event_usage JOIN users ON event_usage.user_id = users.id WHERE event_usage.event_id = $current_event_id ORDER BY event_usage.created_at DESC");
+                $total_usage = mysqli_num_rows($usage_res);
+                ?>
+                <h4 style="color: #1a5c2e; margin-bottom: 10px;">Pengguna Event Ini (<?php echo $total_usage; ?>):</h4>
+                <div class="user-list" style="max-height: 150px; overflow-y: auto; color: #555;">
+                    <?php if ($total_usage == 0): ?>
+                        <p style="font-style: italic; font-size: 12px;">Belum ada yang menggunakan event ini. Jadilah yang pertama!</p>
+                    <?php else: ?>
+                        <ul style="list-style: none; padding: 0;">
+                            <?php while($user_row = mysqli_fetch_assoc($usage_res)): ?>
+                                <li style="padding: 5px 0; border-bottom: 1px solid #eee;"><?php echo $user_row['nama_lengkap']; ?></li>
+                            <?php endwhile; ?>
+                        </ul>
+                    <?php endif; ?>
+                </div>
             </div>
         <?php endif; ?>
 

@@ -28,11 +28,12 @@ h2 { margin-bottom: 20px; color: #1a5c2e; font-size: 24px; } /* Hijau khas ident
 }
 
 .header img {
-    height: 50px;
+    height: 40px; /* Diperkecil dari 50px */
 }
 
 .header h2 {
     margin-bottom: 0;
+    font-size: 18px; /* Diperkecil agar seimbang */
 }
 
 /* Form Styling */
@@ -103,28 +104,29 @@ canvas { width: 100%; height: auto; cursor: move; }
 /* Responsive Design */
 @media (max-width: 480px) {
     body {
-        align-items: flex-start; /* Align container to the top on mobile */
-        padding-top: 20px;
+        align-items: center; /* Kembali ke tengah untuk mobile */
+        padding: 10px;
     }
 
     .container {
         width: 100%;
-        padding: 20px;
-        box-shadow: none;
-        border-radius: 0;
+        padding: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05); /* Kembalikan shadow tipis */
+        border-radius: 12px;
     }
 
     .header {
-        gap: 10px;
+        gap: 8px;
     }
 
     .header img {
-        height: 40px;
+        height: 35px;
     }
 
     .header h2 {
-        font-size: 20px;
+        font-size: 16px;
     }
+}
 
     /* Make admin table scrollable on mobile */
     .table-wrapper {
