@@ -1,250 +1,258 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+/* Variabel Warna - Memudahkan kustomisasi tema */
+:root {
+    --primary-color: #1a5c2e;    /* Hijau Identitas IKAPMAWI */
+    --primary-hover: #134522;
+    --secondary-color: #3498db;  /* Biru untuk tombol download/info */
+    --danger-color: #e74c3c;     /* Merah untuk Reset/Logout */
+    --bg-light: #f4f7f6;
+    --text-dark: #2c3e50;
+    --text-muted: #7f8c8d;
+    --white: #ffffff;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --border-radius: 12px;
+}
+
+/* Reset & Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f4f7f6;
-    color: #333;
-    margin: 0;
-    padding: 15px;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+    padding: 10px;
 }
 
-/* Container Utama (Card Style) */
+/* Container Utama */
 .container {
-    max-width: 800px;
+    max-width: 600px; /* Ukuran ideal untuk aplikasi mobile-first */
     margin: 20px auto;
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    background: var(--white);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-soft);
 }
 
-/* Styling Form (Berlaku untuk Login & Register) */
+/* Header & Logo */
+.header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.header img {
+    max-width: 180px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.header h2 {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.4rem;
+}
+
+/* Styling Form (Login & Register) */
 form {
-    max-width: 400px;
-    margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin: 20px 0;
 }
 
 input[type="text"],
+input[type="number"],
 input[type="password"],
 select {
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid #ddd;
+    border: 1.5px solid #eee;
     border-radius: 8px;
     font-size: 14px;
-    font-family: 'Poppins', sans-serif;
-    box-sizing: border-box;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    font-family: inherit;
+    transition: all 0.3s ease;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus,
-select:focus {
-    border-color: #3498db;
+input:focus {
+    border-color: var(--primary-color);
     outline: none;
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.2);
+    box-shadow: 0 0 0 3px rgba(26, 92, 46, 0.1);
 }
 
-button {
-    font-family: 'Poppins', sans-serif;
-}
-
-.btn-primary, .btn-warning {
+/* Button System */
+.btn-primary, .btn-secondary, .btn-reset {
     width: 100%;
     border: none;
     border-radius: 8px;
     padding: 12px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
 }
 
 .btn-primary {
-    background: #3498db;
-    color: white;
+    background: var(--primary-color);
+    color: var(--white);
 }
 
 .btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--white);
+}
+
+.btn-secondary:hover {
     background: #2980b9;
 }
 
-.btn-warning {
-    background: #f1c40f;
-    color: #333;
+.btn-reset {
+    background: var(--danger-color);
+    color: var(--white);
+    padding: 8px 15px;
+    font-size: 12px;
 }
 
-.btn-warning:hover {
-    background: #f39c12;
-}
-
-.footer-text {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-    color: #666;
-}
-
-.footer-text a {
-    color: #3498db;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.footer-text a:hover {
-    text-decoration: underline;
-}
-
-/* Header Styling */
-.header {
-    text-align: center;
-}
-
-/* Header Logo Styling */
-.header img {
-    max-width: 50%; /* Membatasi lebar logo maksimal 50% dari elemen pembungkus/layar HP */
-    height: auto;   /* Menjaga proporsi logo agar tidak gepeng */
-    margin-bottom: 15px;
-    display: inline-block;
-}
-
-/* Canvas Styling & Responsiveness */
+/* Editor / Canvas Area */
 .canvas-wrapper {
     width: 100%;
-    max-width: 1080px;
-    margin: 0 auto 15px auto;
+    aspect-ratio: 1 / 1; /* Menjaga kotak tetap sempurna */
+    margin-bottom: 15px;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    background-color: #f1f2f6; /* Warna latar belakang untuk menyoroti area foto yang transparan */
+    background-color: #e0e0e0;
     overflow: hidden;
+    position: relative;
+    border: 2px solid #eee;
 }
 
 #mainCanvas {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
-    /* SANGAT PENTING: Mencegah layar HP ikut tergulir (scroll) saat pengguna menggeser/zoom foto di dalam area kanvas */
-    touch-action: none; 
+    touch-action: none; /* KRUSIAL: Mencegah scroll saat geser foto */
 }
 
+/* Zoom Controls */
 .zoom-control {
-    margin: 15px auto 20px auto;
-    text-align: center;
-    background: #f8f9fa;
+    background: #f9f9f9;
     padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #eaeaea;
+    border-radius: 10px;
+    margin: 15px 0;
+    border: 1px solid #f0f0f0;
 }
 
 .zoom-control label {
     display: block;
     font-size: 13px;
-    margin-bottom: 12px;
-    color: #333;
     font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-muted);
 }
 
 #zoomSlider {
     width: 100%;
     height: 6px;
-    background: #ddd;
-    border-radius: 4px;
+    background: #dfe6e9;
+    border-radius: 5px;
     outline: none;
     -webkit-appearance: none;
-    appearance: none;
-    cursor: pointer;
     margin-bottom: 15px;
 }
 
 #zoomSlider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
+    background: var(--primary-color);
     border-radius: 50%;
-    background: #3498db;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
-
-.btn-reset {
-    background: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 15px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn-reset:hover { background: #c0392b; }
 
 /* Gallery View */
 .twibbon-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
     margin-top: 20px;
 }
 
 .twibbon-card {
-    border: 1px solid #eaeaea;
-    border-radius: 8px;
-    padding: 10px;
+    background: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
     text-decoration: none;
-    color: #333;
-    text-align: center;
-    transition: transform 0.2s;
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.twibbon-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-.twibbon-card-img { width: 100%; max-width: 150px; height: auto; border-radius: 6px; }
-.twibbon-card-title { margin-top: 10px; font-size: 0.85rem; font-weight: 600; }
+.twibbon-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
 
-/* Usage Stats & Misc */
-.usage-stats { margin-top: 30px; text-align: left; border-top: 1px solid #eee; padding-top: 20px; }
-.usage-stats h4 { font-size: 1rem; margin-bottom: 10px; color: #444; }
-.user-list { background: #f9f9f9; padding: 15px; border-radius: 8px; max-height: 200px; overflow-y: auto; }
-.user-list ul { list-style: none; }
-.user-list li { padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; color: #555; }
-.user-list li:last-child { border-bottom: none; }
-.empty-list { font-size: 0.9rem; color: #888; font-style: italic; }
-
-.site-footer { text-align: center; margin-top: 30px; font-size: 0.8rem; color: #888; }
-.site-footer a { color: #888; text-decoration: none; }
-.site-footer a:hover { text-decoration: underline; }
-
-/* Global Typography Adjustments for Mobile */
-p { margin-bottom: 10px; font-size: 0.95rem; }
-.login-prompt { text-align: center; background: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffe69c; color: #664d03; margin-top: 20px; }
-.btn-link { color: #0d6efd; text-decoration: none; font-weight: bold; }
-.btn-link:hover { text-decoration: underline; }
-.controls { text-align: center; }
-
-/* Table Styling for Admin */
-.admin-table {
+.twibbon-card-img {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 14px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
 }
-.admin-table th, .admin-table td {
-    border: 1px solid #ddd;
-    padding: 12px 10px;
-    text-align: left;
+
+.twibbon-card-title {
+    padding: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
 }
-.admin-table th {
-    background-color: #3498db;
-    color: white;
+
+/* Stats & Footer */
+.usage-stats {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
 }
-.admin-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+
+.user-list {
+    background: #fdfdfd;
+    padding: 10px;
+    border-radius: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #f5f5f5;
 }
+
+.user-list ul {
+    list-style: none;
+}
+
+.user-list li {
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px dashed #eee;
+}
+
+.site-footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Helper Classes */
+.mt-10 { margin-top: 10px; }
+.text-center { text-align: center; }
+.text-red { color: var(--danger-color); }
