@@ -13,6 +13,10 @@ if (canvas) {
     let isDragging = false;
     let startX, startY;
 
+    // Mobile touch state
+    let lastTouchX = 0, lastTouchY = 0;
+    let lastPinchDist = 0;
+
     // Load template from the selected event
     const templateSrc = canvas.getAttribute('data-template');
     if (templateSrc) {
@@ -81,7 +85,7 @@ if (canvas) {
         }
     }
 
-    // Mouse/Touch events for positioning
+    // --- MOUSE EVENTS ---
     canvas.addEventListener('mousedown', (e) => {
         isDragging = true;
         startX = e.offsetX;
@@ -109,6 +113,46 @@ if (canvas) {
         if (e.deltaY < 0) imgScale *= scaleFactor;
         else imgScale /= scaleFactor;
         draw();
+    }, { passive: false });
+
+    // --- TOUCH EVENTS (MOBILE) ---
+    function getDistance(t1, t2) {
+        return Math.hypot(t1.pageX - t2.pageX, t1.pageY - t2.pageY);
+    }
+
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+            lastTouchX = e.touches[0].pageX;
+            lastTouchY = e.touches[0].pageY;
+        } else if (e.touches.length === 2) {
+            lastPinchDist = getDistance(e.touches[0], e.touches[1]);
+        }
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+            // Dragging
+            const dx = e.touches[0].pageX - lastTouchX;
+            const dy = e.touches[0].pageY - lastTouchY;
+            imgX += dx;
+            imgY += dy;
+            lastTouchX = e.touches[0].pageX;
+            lastTouchY = e.touches[0].pageY;
+        } else if (e.touches.length === 2) {
+            // Pinch to Zoom
+            const currentDist = getDistance(e.touches[0], e.touches[1]);
+            const scaleFactor = currentDist / lastPinchDist;
+            imgScale *= scaleFactor;
+            lastPinchDist = currentDist;
+        }
+        draw();
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        lastPinchDist = 0;
     }, { passive: false });
 
     downloadBtn.addEventListener('click', () => {
