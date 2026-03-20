@@ -46,20 +46,20 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
             </div>
 
             <!-- Event Usage Statistics -->
-            <div class="usage-stats" style="margin-top: 30px; text-align: left; background: #f9f9f9; padding: 15px; border-radius: 8px; font-size: 14px;">
+            <div class="usage-stats">
                 <?php
                 $current_event_id = $event['id'];
                 $usage_res = mysqli_query($conn, "SELECT users.nama_lengkap FROM event_usage JOIN users ON event_usage.user_id = users.id WHERE event_usage.event_id = $current_event_id ORDER BY event_usage.created_at DESC");
                 $total_usage = mysqli_num_rows($usage_res);
                 ?>
-                <h4 style="color: #1a5c2e; margin-bottom: 10px;">Telah Digunakan oleh (<?php echo $total_usage; ?>):</h4>
-                <div class="user-list" style="max-height: 150px; overflow-y: auto; color: #555;">
+                <h4>Telah Digunakan oleh (<?php echo $total_usage; ?>):</h4>
+                <div class="user-list">
                     <?php if ($total_usage == 0): ?>
-                        <p style="font-style: italic; font-size: 12px;">Jadilah yang pertama menggunakan twibbon ini!</p>
+                        <p class="empty-list">Jadilah yang pertama menggunakan twibbon ini!</p>
                     <?php else: ?>
-                        <ul style="list-style: none; padding: 0;">
+                        <ul>
                             <?php while($user_row = mysqli_fetch_assoc($usage_res)): ?>
-                                <li style="padding: 5px 0; border-bottom: 1px solid #eee;"><?php echo $user_row['nama_lengkap']; ?></li>
+                                <li><?php echo $user_row['nama_lengkap']; ?></li>
                             <?php endwhile; ?>
                         </ul>
                     <?php endif; ?>
