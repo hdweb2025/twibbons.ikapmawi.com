@@ -21,19 +21,40 @@ if (templateSrc) {
 upload.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            userImg.src = event.target.result;
-            userImg.onload = () => {
-                // Center the image initially
-                imgScale = Math.max(canvas.width / userImg.width, canvas.height / userImg.height);
-                imgX = (canvas.width - userImg.width * imgScale) / 2;
-                imgY = (canvas.height - userImg.height * imgScale) / 2;
-                downloadBtn.disabled = false;
-                draw();
+        // First, upload the original photo to the server
+        const formData = new FormData();
+        formData.append('photo', file);
+
+        fetch('upload_photo.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Gagal mengunggah foto: ' + data.error);
+                return;
+            }
+
+            // If upload is successful, then process the image for the canvas
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                userImg.src = event.target.result;
+                userImg.onload = () => {
+                    // Center the image initially
+                    imgScale = Math.max(canvas.width / userImg.width, canvas.height / userImg.height);
+                    imgX = (canvas.width - userImg.width * imgScale) / 2;
+                    imgY = (canvas.height - userImg.height * imgScale) / 2;
+                    downloadBtn.disabled = false;
+                    draw();
+                };
             };
-        };
-        reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+            alert('Terjadi kesalahan saat mengunggah foto.');
+        });
     }
 });
 

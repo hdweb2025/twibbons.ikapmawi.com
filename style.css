@@ -19,6 +19,22 @@ body {
 
 h2 { margin-bottom: 20px; color: #1a5c2e; font-size: 24px; } /* Hijau khas identitas muslim/organisasi */
 
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.header img {
+    height: 50px;
+}
+
+.header h2 {
+    margin-bottom: 0;
+}
+
 /* Form Styling */
 form { display: flex; flex-direction: column; gap: 15px; }
 input {

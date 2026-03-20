@@ -29,11 +29,15 @@ if (isset($_POST['login'])) {
 <html>
 <head>
     <title>Login IKAPMAWI</title>
+    <link rel="icon" href="assets/icon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h2>Login Alumni</h2>
+        <div class="header">
+            <img src="assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
+            <h2>Login Alumni</h2>
+        </div>
         <form method="POST">
             <input type="text" name="hp" placeholder="Nomor HP" required><br>
             <input type="password" name="password" placeholder="Password" required><br>

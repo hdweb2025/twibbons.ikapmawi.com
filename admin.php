@@ -57,11 +57,15 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 <html>
 <head>
     <title>Admin - Twibbon IKAPMAWI</title>
+    <link rel="icon" href="assets/icon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container" style="max-width: 600px;">
-        <h2>Panel Admin Twibbon</h2>
+        <div class="header">
+            <img src="assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
+            <h2>Panel Admin Twibbon</h2>
+        </div>
         <p>Halo, Admin <b><?php echo $_SESSION['user']; ?></b></p>
         
         <form method="POST" enctype="multipart/form-data" style="margin-bottom: 30px;">

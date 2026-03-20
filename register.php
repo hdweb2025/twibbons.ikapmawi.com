@@ -18,7 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 <div class="container">
-    <h2>Daftar Alumni</h2>
+    <div class="header">
+        <img src="assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
+        <h2>Daftar Alumni</h2>
+    </div>
     <?php if(isset($error)) echo "<p style='color:red'>$error</p>"; ?>
     <form method="POST">
         <input type="text" name="nama" placeholder="Nama Lengkap" required>

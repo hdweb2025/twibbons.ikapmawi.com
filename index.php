@@ -20,11 +20,15 @@ if (isset($_SESSION['user'])) {
 <html>
 <head>
     <title>Twibbon IKAPMAWI</title>
+    <link rel="icon" href="assets/icon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
-    <h2>Twibbon IKAPMAWI</h2>
+    <div class="header">
+        <img src="assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
+        <h2>Twibbon IKAPMAWI</h2>
+    </div>
 
     <?php if (isset($_SESSION['user'])): ?>
         <p>Halo, <b><?php echo $_SESSION['user']; ?></b> (Alumni <?php echo $_SESSION['tahun']; ?>)</p>
