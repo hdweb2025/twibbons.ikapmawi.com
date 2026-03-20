@@ -50,6 +50,7 @@ if (isset($_POST['login'])) {
             <?php endif; ?>
         </form>
         <form method="POST" action="login.php<?php echo isset($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : ''; ?>">
+            <small>Masukkan Nomor HP Anda untuk memulai membuat Twibbon</small><br>
             <input type="text" name="hp" placeholder="Nomor HP" required><br>
             <!-- <input type="password" name="password" placeholder="Password" required><br> -->
             <button type="submit" name="login" class="btn-primary">Masuk</button>
