@@ -34,6 +34,13 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
     <?php if ($event): // If a specific event is being viewed ?>
         <?php if (isset($_SESSION['user'])): // If user is logged in, show editor ?>
             <p>Halo, <b><?php echo $_SESSION['user']; ?></b> (Alumni <?php echo $_SESSION['tahun']; ?>)</p>
+
+            <!-- File upload control placed before the template preview -->
+            <div class="controls">
+                <input type="file" id="upload" accept="image/*" style="display:none">
+                <label for="upload" class="btn-primary" style="display:block; margin-bottom:10px;">Pilih Foto</label>
+            </div>
+
             <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Gunakan mouse wheel untuk zoom, drag untuk geser foto.</p>
             <div class="canvas-wrapper">
             <canvas id="mainCanvas" width="1080" height="1080" data-template="/<?php echo $event['template']; ?>" data-event-id="<?php echo $event['id']; ?>"></canvas>
@@ -46,9 +53,6 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
         </div>
 
         <div class="controls">
-                <input type="file" id="upload" accept="image/*" style="display:none">
-                <label for="upload" class="btn-primary" style="display:block; margin-bottom:10px;">Pilih Foto</label>
-
                 <button id="download" class="btn-primary" style="width:100%; background:#3498db" disabled>Download Twibbon Anda</button>
                 <a href="/" style="display:block; margin-top:10px; color: #666; font-size: 12px; text-decoration: none;">Kembali ke Galeri</a>
             </div>
