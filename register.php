@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 <div class="container">
     <div class="header">
-        <img src="/assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
+        <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI">
         <h2>Kamu Alumni MWI ?</h2>
         <p style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 25px;">Luangkan Sejenak untuk Beri Tahu kami, <br> Anda Alumni MWI Tahun Berapa?</p>
     </div>
