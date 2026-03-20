@@ -15,25 +15,14 @@
     let isDragging = false;
     let startX, startY;
     let lastTouchX = 0, lastTouchY = 0, lastPinchDist = 0;
-    let needsDraw = true;
 
     // Load template
     const templateSrc = canvas.getAttribute('data-template');
     if (templateSrc) {
         templateImg.crossOrigin = "anonymous";
         templateImg.src = templateSrc;
-        templateImg.onload = () => { needsDraw = true; };
+        templateImg.onload = () => { draw(); };
     }
-
-    // Animation Loop for Real-time rendering
-    function animate() {
-        if (needsDraw) {
-            draw();
-            needsDraw = false;
-        }
-        requestAnimationFrame(animate);
-    }
-    requestAnimationFrame(animate);
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -46,14 +35,21 @@
     }
 
     function updateSlider() {
-        if (zoomSlider) zoomSlider.value = imgScale;
+        if (zoomSlider) {
+            // Ensure the slider can represent the current scale
+            if (imgScale < parseFloat(zoomSlider.min)) zoomSlider.min = (imgScale * 0.5).toFixed(3);
+            if (imgScale > parseFloat(zoomSlider.max)) zoomSlider.max = (imgScale * 1.5).toFixed(3);
+            zoomSlider.value = imgScale;
+        }
     }
 
     // Input handlers
     if (zoomSlider) {
-        zoomSlider.addEventListener('input', (e) => {
-            imgScale = parseFloat(e.target.value);
-            needsDraw = true;
+        ['input', 'change'].forEach(evt => {
+            zoomSlider.addEventListener(evt, (e) => {
+                imgScale = parseFloat(e.target.value);
+                draw(); // Draw immediately
+            });
         });
     }
 
@@ -76,7 +72,7 @@
                         imgY = (canvas.height - userImg.height * imgScale) / 2;
                         downloadBtn.disabled = false;
                         updateSlider();
-                        needsDraw = true;
+                        draw();
                     };
                 };
                 reader.readAsDataURL(file);
@@ -96,7 +92,7 @@
             imgY += (e.offsetY - startY);
             startX = e.offsetX;
             startY = e.offsetY;
-            needsDraw = true;
+            draw(); // Draw immediately
         }
     });
     canvas.addEventListener('wheel', (e) => {
@@ -104,13 +100,16 @@
         const factor = e.deltaY < 0 ? 1.05 : 0.95;
         imgScale *= factor;
         updateSlider();
-        needsDraw = true;
+        draw(); // Draw immediately
     }, { passive: false });
 
     // --- TOUCH (MOBILE) ---
     function getDist(t1, t2) { return Math.hypot(t1.pageX - t2.pageX, t1.pageY - t2.pageY); }
 
     canvas.addEventListener('touchstart', (e) => {
+        // Only prevent default if we're on the canvas to avoid blocking other elements
+        if (e.target === canvas) e.preventDefault();
+        
         if (e.touches.length === 1) {
             lastTouchX = e.touches[0].pageX;
             lastTouchY = e.touches[0].pageY;
@@ -120,7 +119,7 @@
     }, { passive: false });
 
     canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
+        if (e.target === canvas) e.preventDefault();
         if (e.touches.length === 1) {
             imgX += (e.touches[0].pageX - lastTouchX);
             imgY += (e.touches[0].pageY - lastTouchY);
@@ -129,12 +128,13 @@
         } else if (e.touches.length === 2) {
             const dist = getDist(e.touches[0], e.touches[1]);
             if (lastPinchDist > 0) {
-                imgScale *= (dist / lastPinchDist);
+                const scaleFactor = dist / lastPinchDist;
+                imgScale = Math.max(0.001, imgScale * scaleFactor); // Prevent scale from hitting 0
                 updateSlider();
             }
             lastPinchDist = dist;
         }
-        needsDraw = true;
+        draw(); // Draw immediately
     }, { passive: false });
 
     canvas.addEventListener('touchend', () => { lastPinchDist = 0; }, { passive: false });
