@@ -10,10 +10,11 @@ if (isset($_POST['login'])) {
     $user = mysqli_fetch_assoc($result);
 
     if ($user && password_verify($pass, $user['password'])) {
-        $_SESSION['user_id'] = $user['id']; // Add user_id to session
+        $_SESSION['user_id'] = $user['id'];
         $_SESSION['user'] = $user['nama_lengkap'];
         $_SESSION['tahun'] = $user['tahun_alumni'];
-        $_SESSION['hp'] = $user['nomor_hp']; // Store HP for admin check
+        $_SESSION['hp'] = $user['nomor_hp'];
+        $_SESSION['is_admin'] = $user['is_admin']; // Store admin status in session
         
         // Redirect based on redirect parameter or admin status
         if (isset($_GET['redirect'])) {

@@ -118,6 +118,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                             ?>
                         </td>
                         <td style="padding:10px; border:1px solid #ddd;">
+                            <a href="/edit_event.php?id=<?php echo $row['id']; ?>" style="margin-right: 10px;">Ganti</a>
                             <a href="/admin.php?delete=<?php echo $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus?')" style="color:red;">Hapus</a>
                         </td>
                     </tr>
