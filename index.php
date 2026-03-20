@@ -35,10 +35,15 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
             <p>Halo, <b><?php echo $_SESSION['user']; ?></b> (Alumni <?php echo $_SESSION['tahun']; ?>)</p>
             <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Gunakan mouse wheel untuk zoom, drag untuk geser foto.</p>
             <div class="canvas-wrapper">
-                <canvas id="mainCanvas" width="1080" height="1080" data-template="/<?php echo $event['template']; ?>" data-event-id="<?php echo $event['id']; ?>"></canvas>
-            </div>
+            <canvas id="mainCanvas" width="1080" height="1080" data-template="/<?php echo $event['template']; ?>" data-event-id="<?php echo $event['id']; ?>"></canvas>
+        </div>
 
-            <div class="controls">
+        <div class="zoom-control" style="margin-bottom: 20px;">
+            <label style="display:block; font-size:12px; margin-bottom: 5px; color:#666;">Perbesar / Perkecil Foto:</label>
+            <input type="range" id="zoomSlider" min="0.1" max="3" step="0.01" value="1" style="width: 100%; height: 30px;">
+        </div>
+
+        <div class="controls">
                 <input type="file" id="upload" accept="image/*" style="display:none">
                 <label for="upload" class="btn-primary" style="display:block; margin-bottom:10px;">Pilih Foto</label>
                 <button id="download" class="btn-primary" style="width:100%; background:#3498db" disabled>Unduh Hasil</button>
