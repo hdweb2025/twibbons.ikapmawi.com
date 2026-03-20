@@ -1,10 +1,12 @@
 /* Reset & Base */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
-    font-family: 'Inter', -apple-system, sans-serif; 
-    background: #f0f2f5; 
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #f0f2f5;
     color: #333;
-    display: flex; justify-content: center; align-items: center; min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .container {
@@ -15,6 +17,8 @@ body {
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.05);
     text-align: center;
+    margin: auto;
+    flex-grow: 1; /* Allow container to grow to push footer down */
 }
 
 h2 { margin-bottom: 20px; color: #1a5c2e; font-size: 24px; } /* Hijau khas identitas muslim/organisasi */
@@ -230,11 +234,10 @@ canvas { width: 100%; height: auto; cursor: move; }
 .site-footer {
     text-align: center;
     padding: 20px;
-    margin-top: auto;
+    margin-top: auto; /* Push footer to the bottom */
     font-size: 12px;
     color: #888;
-    width: 100%;
-    background-color: #f0f2f5; /* Match body background */
+    width: 100%; /* Ensure footer takes full width */
 }
 
 .site-footer a {
