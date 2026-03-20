@@ -97,7 +97,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 
 
 <footer class="site-footer">
-    <p>&copy; <?php echo date('Y'); ?> IKAPMAWI. All Rights Reserved.</p>
+    <p>ikapmawi &copy; <?php echo date('Y'); ?> All Rights Reserved.</p>
     <?php if(!isset($_SESSION['user'])): ?>
         <p><a href="/login.php">Admin Login</a></p>
     <?php endif; ?>
