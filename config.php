@@ -25,6 +25,24 @@ if (mysqli_num_rows($check_slug_column) == 0) {
     mysqli_query($conn, "ALTER TABLE events ADD COLUMN slug VARCHAR(255) UNIQUE NOT NULL AFTER name");
 }
 
+// Populate empty slugs for existing events
+$empty_slugs = mysqli_query($conn, "SELECT id, name, template FROM events");
+while ($row = mysqli_fetch_assoc($empty_slugs)) {
+    $id = $row['id'];
+    $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $row['name']), '-'));
+    
+    // Update slug if it's empty or doesn't match the name
+    mysqli_query($conn, "UPDATE events SET slug = '$slug' WHERE id = $id AND (slug = '' OR slug IS NULL)");
+    
+    // Fix template path if it's missing but exists in photos
+    if (!file_exists($row['template'])) {
+        $possible_path = "uploads/photos/" . $row['name'] . ".png";
+        if (file_exists($possible_path)) {
+            mysqli_query($conn, "UPDATE events SET template = '$possible_path' WHERE id = $id");
+        }
+    }
+}
+
 mysqli_query($conn, "CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nama_lengkap VARCHAR(255) NOT NULL,

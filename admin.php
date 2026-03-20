@@ -96,6 +96,8 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                 <thead>
                     <tr style="background:#f4f4f4;">
                         <th style="padding:10px; border:1px solid #ddd;">Nama Event</th>
+                        <th style="padding:10px; border:1px solid #ddd;">Slug/Link</th>
+                        <th style="padding:10px; border:1px solid #ddd;">Template</th>
                         <th style="padding:10px; border:1px solid #ddd;">Aksi</th>
                     </tr>
                 </thead>
@@ -103,6 +105,18 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                     <?php while($row = mysqli_fetch_assoc($events)): ?>
                     <tr>
                         <td style="padding:10px; border:1px solid #ddd;"><?php echo $row['name']; ?></td>
+                        <td style="padding:10px; border:1px solid #ddd;">
+                            <a href="<?php echo $row['slug']; ?>/" target="_blank"><?php echo $row['slug']; ?></a>
+                        </td>
+                        <td style="padding:10px; border:1px solid #ddd; font-size: 10px;">
+                            <?php 
+                                if (file_exists($row['template'])) {
+                                    echo "<span style='color:green;'>OK</span> (" . basename($row['template']) . ")";
+                                } else {
+                                    echo "<span style='color:red;'>File Hilang!</span>";
+                                }
+                            ?>
+                        </td>
                         <td style="padding:10px; border:1px solid #ddd;">
                             <a href="admin.php?delete=<?php echo $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus?')" style="color:red;">Hapus</a>
                         </td>
