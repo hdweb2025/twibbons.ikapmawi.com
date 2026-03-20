@@ -51,11 +51,11 @@
     }
 
     function resetImageState() {
-        // 1. Area target sesuai ukuran frame template (separuh ukuran canvas)
-        const targetX = 40; 
-        const targetY = 220;
-        const targetW = 570;
-        const targetH = 570;
+        // 1. Area target otomatis (contoh: persis separuh dari ukuran kanvas dan tepat di tengah)
+        const targetW = canvas.width / 2;  // Hasilnya 540 jika kanvas 1080
+        const targetH = canvas.height / 2; // Hasilnya 540 jika kanvas 1080
+        const targetX = (canvas.width - targetW) / 2; // Mengatur posisi X agar presisi di tengah
+        const targetY = (canvas.height - targetH) / 2; // Mengatur posisi Y agar presisi di tengah
 
         // 2. Hitung rasio scale agar default foto yang diupload seukuran frame target
         const scaleW = targetW / userImg.width;
