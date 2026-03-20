@@ -14,9 +14,16 @@ if (!$conn) {
 mysqli_query($conn, "CREATE TABLE IF NOT EXISTS events (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
     template VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
+
+// Check if slug column exists, if not add it
+$check_slug_column = mysqli_query($conn, "SHOW COLUMNS FROM events LIKE 'slug'");
+if (mysqli_num_rows($check_slug_column) == 0) {
+    mysqli_query($conn, "ALTER TABLE events ADD COLUMN slug VARCHAR(255) UNIQUE NOT NULL AFTER name");
+}
 
 mysqli_query($conn, "CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,

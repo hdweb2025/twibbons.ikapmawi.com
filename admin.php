@@ -20,21 +20,30 @@ if (!$user['is_admin']) {
 // Handle adding new event
 if (isset($_POST['add_event'])) {
     $name = mysqli_real_escape_string($conn, $_POST['event_name']);
-    $file = $_FILES['template'];
     
-    $target_dir = "uploads/templates/";
-    if (!file_exists($target_dir)) {
-        mkdir($target_dir, 0777, true);
-    }
-    
-    $filename = time() . "_" . basename($file["name"]);
-    $target_file = $target_dir . $filename;
-    
-    if (move_uploaded_file($file["tmp_name"], $target_file)) {
-        mysqli_query($conn, "INSERT INTO events (name, template) VALUES ('$name', '$target_file')");
-        $success = "Event berhasil ditambahkan!";
+    // Create a URL-friendly slug
+    $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+', '-', $name), '-'));
+
+    // Check if slug already exists to prevent duplicates
+    $check_slug = mysqli_query($conn, "SELECT id FROM events WHERE slug = '$slug'");
+    if (mysqli_num_rows($check_slug) > 0) {
+        $error = "Nama event ini sudah ada atau terlalu mirip dengan event lain. Silakan gunakan nama yang lebih unik.";
     } else {
-        $error = "Gagal mengunggah template.";
+        $file = $_FILES['template'];
+        $target_dir = "uploads/templates/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        
+        $filename = time() . "_" . basename($file["name"]);
+        $target_file = $target_dir . $filename;
+        
+        if (move_uploaded_file($file["tmp_name"], $target_file)) {
+            mysqli_query($conn, "INSERT INTO events (name, slug, template) VALUES ('$name', '$slug', '$target_file')");
+            $success = "Event berhasil ditambahkan! URL Share: twibbons.ikapmawi.com/" . $slug;
+        } else {
+            $error = "Gagal mengunggah template.";
+        }
     }
 }
 

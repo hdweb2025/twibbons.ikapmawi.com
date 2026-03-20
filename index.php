@@ -40,8 +40,10 @@ if (isset($_SESSION['user'])) {
                 <?php if (mysqli_num_rows($events) == 0): ?>
                     <p>Belum ada event tersedia.</p>
                 <?php else: ?>
-                    <?php while($row = mysqli_fetch_assoc($events)): ?>
-                        <a href="index.php?event=<?php echo $row['id']; ?>" class="btn-primary" style="text-decoration: none;">
+                    <?php while($row = mysqli_fetch_assoc($events)):
+                        $share_url = "twibbons.ikapmawi.com/" . $row['slug'];
+                    ?>
+                        <a href="<?php echo $row['slug']; ?>" class="btn-primary" style="text-decoration: none;">
                             <?php echo $row['name']; ?>
                         </a>
                     <?php endwhile; ?>
