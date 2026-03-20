@@ -2,7 +2,7 @@
 session_start();
 include 'config.php';
 
-if (!isset($_SESSION['user_id']) || !isset($_POST['event_id'])) {
+if (!isset($_SESSION['user_id']) || !isset($_POST['event_id']) || $_SESSION['is_admin']) {
     http_response_code(403);
     exit();
 }
