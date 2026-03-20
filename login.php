@@ -12,7 +12,14 @@ if (isset($_POST['login'])) {
     if ($user && password_verify($pass, $user['password'])) {
         $_SESSION['user'] = $user['nama_lengkap'];
         $_SESSION['tahun'] = $user['tahun_alumni'];
-        header("Location: twibbon.php");
+        $_SESSION['hp'] = $user['nomor_hp']; // Store HP for admin check
+        
+        // Redirect based on admin status
+        if ($user['is_admin']) {
+            header("Location: admin.php");
+        } else {
+            header("Location: index.php");
+        }
     } else {
         echo "<script>alert('Nomor HP atau Password salah!');</script>";
     }
@@ -30,7 +37,7 @@ if (isset($_POST['login'])) {
         <form method="POST">
             <input type="text" name="hp" placeholder="Nomor HP" required><br>
             <input type="password" name="password" placeholder="Password" required><br>
-            <button type="submit" name="login" class="btn-download">Masuk</button>
+            <button type="submit" name="login" class="btn-primary">Masuk</button>
         </form>
     </div>
 </body>
