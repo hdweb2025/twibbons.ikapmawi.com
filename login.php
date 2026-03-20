@@ -50,10 +50,13 @@ if (isset($_POST['login'])) {
             <?php endif; ?>
         </form>
         <form method="POST" action="login.php<?php echo isset($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : ''; ?>">
-            <small>Masuk dengan Nomor HP Anda, <br> untuk memulai membuat Twibbon</small><br>
-            <input type="text" name="hp" placeholder="Nomor HP" required><br>
-            <!-- <input type="password" name="password" placeholder="Password" required><br> -->
+            <p style="text-align: center; color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 20px;">Masuk dengan Nomor HP Anda, <br> untuk memulai membuat Twibbon</p>
+            <input type="text" name="hp" placeholder="Nomor HP" required>
+            <!-- <input type="password" name="password" placeholder="Password" required> -->
             <button type="submit" name="login" class="btn-primary">Masuk</button>
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="/register.php<?php echo isset($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : ''; ?>" class="btn-link">Belum punya akun? Daftar</a>
+            </div>
         </form>
     </div>
 </body>
