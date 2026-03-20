@@ -228,3 +228,23 @@ p { margin-bottom: 10px; font-size: 0.95rem; }
 .btn-link { color: #0d6efd; text-decoration: none; font-weight: bold; }
 .btn-link:hover { text-decoration: underline; }
 .controls { text-align: center; }
+
+/* Table Styling for Admin */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+}
+.admin-table th, .admin-table td {
+    border: 1px solid #ddd;
+    padding: 12px 10px;
+    text-align: left;
+}
+.admin-table th {
+    background-color: #3498db;
+    color: white;
+}
+.admin-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
