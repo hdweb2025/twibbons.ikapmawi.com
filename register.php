@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="header">
         <img src="/assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
         <h2>Kamu Alumni MWI ?</h2>
-        <p style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 25px;">Luangkan Sejenak untuk Beri Tahu kami, anda Alumni Tahun Berapa?</p>
+        <p style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 25px;">Luangkan Sejenak untuk Beri Tahu kami, <br> Anda Alumni MWI Tahun Berapa?</p>
     </div>
     <?php if(isset($error)) echo "<p style='color:#e74c3c; background:#fadbd8; padding:12px; border-radius:8px; text-align:center; font-size:14px; margin: 0 auto 20px auto; max-width: 400px;'>$error</p>"; ?>
     <form method="POST">
