@@ -98,7 +98,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
         </div>
     <?php endif; ?>
 
-</div>
+
 
 <footer class="site-footer">
     <p>&copy; <?php echo date('Y'); ?> IKAPMAWI. All Rights Reserved.</p>
