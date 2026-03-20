@@ -75,8 +75,8 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
         <?php else: // If user is not logged in, show login prompt ?>
             <div class="login-prompt">
                 <p>
-                    Anda ingin membuat Twibbon untuk <b><?php echo $event['name']; ?></b>?<br>
-                    Silakan masuk atau daftar terlebih dahulu.
+                    Ingin membuat Twibbon <b><?php echo $event['name']; ?></b>?<br>
+                    Ayo Gabung dulu dengan <b>ikapmawi.</b>
                 </p>
                 <?php 
                     $login_url = "/login.php?redirect=" . urlencode($event['slug'] . ".php");
