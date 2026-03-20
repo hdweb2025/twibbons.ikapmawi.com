@@ -48,6 +48,15 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
         <div class="controls">
                 <input type="file" id="upload" accept="image/*" style="display:none">
                 <label for="upload" class="btn-primary" style="display:block; margin-bottom:10px;">Pilih Foto</label>
+        </div>
+
+        <div class="zoom-control">
+            <label>Resize Foto:</label>
+            <input type="range" id="zoomSlider" min="0.01" max="5" step="0.001" value="1">
+            <button id="resetBtn" class="btn-reset">Reset Posisi</button>
+        </div>
+
+        <div class="controls">
                 <button id="download" class="btn-primary" style="width:100%; background:#3498db" disabled>Download Twibbon Anda</button>
                 <a href="/" style="display:block; margin-top:10px; color: #666; font-size: 12px; text-decoration: none;">Kembali ke Galeri</a>
             </div>
