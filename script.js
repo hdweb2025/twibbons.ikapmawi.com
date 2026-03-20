@@ -36,9 +36,6 @@
 
     function updateSlider() {
         if (zoomSlider) {
-            // Ensure the slider can represent the current scale
-            if (imgScale < parseFloat(zoomSlider.min)) zoomSlider.min = (imgScale * 0.5).toFixed(3);
-            if (imgScale > parseFloat(zoomSlider.max)) zoomSlider.max = (imgScale * 1.5).toFixed(3);
             zoomSlider.value = imgScale;
         }
     }
@@ -47,8 +44,14 @@
     if (zoomSlider) {
         ['input', 'change'].forEach(evt => {
             zoomSlider.addEventListener(evt, (e) => {
+                const oldScale = imgScale;
                 imgScale = parseFloat(e.target.value);
-                draw(); // Draw immediately
+                
+                // Keep image centered while zooming via slider
+                imgX -= (userImg.width * imgScale - userImg.width * oldScale) / 2;
+                imgY -= (userImg.height * imgScale - userImg.height * oldScale) / 2;
+                
+                draw();
             });
         });
     }
@@ -67,9 +70,13 @@
                 reader.onload = (ev) => {
                     userImg.src = ev.target.result;
                     userImg.onload = () => {
-                        imgScale = Math.max(canvas.width / userImg.width, canvas.height / userImg.height);
+                        // DEFAULT: Fit to width of canvas
+                        imgScale = canvas.width / userImg.width;
+                        
+                        // Center the image
                         imgX = (canvas.width - userImg.width * imgScale) / 2;
                         imgY = (canvas.height - userImg.height * imgScale) / 2;
+                        
                         downloadBtn.disabled = false;
                         updateSlider();
                         draw();

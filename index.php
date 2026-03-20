@@ -39,8 +39,8 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
         </div>
 
         <div class="zoom-control" style="margin-bottom: 20px;">
-            <label style="display:block; font-size:12px; margin-bottom: 5px; color:#666;">Perbesar / Perkecil Foto:</label>
-            <input type="range" id="zoomSlider" min="0.01" max="5" step="0.01" value="1" style="width: 100%; height: 30px; cursor: pointer;">
+            <label style="display:block; font-size:12px; margin-bottom: 5px; color:#666;">Atur Ukuran Foto:</label>
+            <input type="range" id="zoomSlider" min="0.05" max="3" step="0.005" value="1" style="width: 100%; height: 30px; cursor: pointer;">
         </div>
 
         <div class="controls">
