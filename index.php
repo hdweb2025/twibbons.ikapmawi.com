@@ -41,26 +41,26 @@ if (isset($_SESSION['user'])) {
                     <p>Belum ada event tersedia.</p>
                 <?php else: ?>
                     <?php while($row = mysqli_fetch_assoc($events)):
-                          $slug = !empty($row['slug']) ? $row['slug'] . '/' : 'index.php?event_slug=' . $row['slug'];
-                      ?>
-                          <a href="<?php echo $slug; ?>" class="btn-primary" style="text-decoration: none;">
-                              <?php echo $row['name']; ?>
-                          </a>
-                      <?php endwhile; ?>
+                           $slug = !empty($row['slug']) ? '/' . $row['slug'] . '/' : '/index.php?event_slug=' . $row['slug'];
+                       ?>
+                           <a href="<?php echo $slug; ?>" class="btn-primary" style="text-decoration: none;">
+                               <?php echo $row['name']; ?>
+                           </a>
+                       <?php endwhile; ?>
                 <?php endif; ?>
             </div>
         <?php else: ?>
             <h3>Event: <?php echo $event['name']; ?></h3>
             <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Gunakan mouse wheel untuk zoom, drag untuk geser foto.</p>
             <div class="canvas-wrapper">
-                <canvas id="mainCanvas" width="1080" height="1080" data-template="<?php echo $event['template']; ?>" data-event-id="<?php echo $event['id']; ?>"></canvas>
+                <canvas id="mainCanvas" width="1080" height="1080" data-template="/<?php echo $event['template']; ?>" data-event-id="<?php echo $event['id']; ?>"></canvas>
             </div>
 
             <div class="controls">
                 <input type="file" id="upload" accept="image/*" style="display:none">
                 <label for="upload" class="btn-primary" style="display:block; margin-bottom:10px;">Pilih Foto</label>
                 <button id="download" class="btn-primary" style="width:100%; background:#3498db" disabled>Unduh Hasil</button>
-                <a href="index.php" style="display:block; margin-top:10px; color: #666; font-size: 12px; text-decoration: none;">Kembali ke Pilih Event</a>
+                <a href="/" style="display:block; margin-top:10px; color: #666; font-size: 12px; text-decoration: none;">Kembali ke Pilih Event</a>
             </div>
 
             <!-- Event Usage Statistics -->
@@ -85,20 +85,20 @@ if (isset($_SESSION['user'])) {
             </div>
         <?php endif; ?>
 
-        <a href="logout.php" style="display:block; margin-top:20px; color:red; font-size:12px;">Keluar</a>
+        <a href="/logout.php" style="display:block; margin-top:20px; color:red; font-size:12px;">Keluar</a>
 
     <?php else: ?>
         <div class="landing-content" style="text-align: center;">
             <p style="font-size: 18px; margin-bottom: 30px;">Selamat datang di portal Twibbon resmi IKAPMAWI. Mari meriahkan setiap momen kebersamaan kita!</p>
-            <a href="login.php" class="btn-primary" style="text-decoration: none; margin-bottom: 10px; display: block;">Mulai Buat Twibbon</a>
-            <a href="register.php" class="btn-secondary" style="text-decoration: none; display: block;">Daftar / Gabung Sekarang</a>
+            <a href="/login.php" class="btn-primary" style="text-decoration: none; margin-bottom: 10px; display: block;">Mulai Buat Twibbon</a>
+            <a href="/register.php" class="btn-secondary" style="text-decoration: none; display: block;">Daftar / Gabung Sekarang</a>
         </div>
     <?php endif; ?>
 
 </div>
 
 <?php if (isset($_SESSION['user'])): ?>
-<script src="script.js"></script>
+<script src="/script.js"></script>
 <?php endif; ?>
 
 </body>

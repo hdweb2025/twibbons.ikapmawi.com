@@ -67,13 +67,13 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 <head>
     <title>Admin - Twibbon IKAPMAWI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="assets/icon.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="/assets/icon.png">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="container" style="max-width: 600px;">
         <div class="header">
-            <img src="assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
+            <img src="/assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
             <h2>Panel Admin Twibbon</h2>
         </div>
         <p>Halo, Admin <b><?php echo $_SESSION['user']; ?></b></p>
@@ -106,7 +106,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                     <tr>
                         <td style="padding:10px; border:1px solid #ddd;"><?php echo $row['name']; ?></td>
                         <td style="padding:10px; border:1px solid #ddd;">
-                            <a href="<?php echo $row['slug']; ?>/" target="_blank"><?php echo $row['slug']; ?></a>
+                            <a href="/<?php echo $row['slug']; ?>/" target="_blank"><?php echo $row['slug']; ?></a>
                         </td>
                         <td style="padding:10px; border:1px solid #ddd; font-size: 10px;">
                             <?php 
@@ -118,7 +118,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                             ?>
                         </td>
                         <td style="padding:10px; border:1px solid #ddd;">
-                            <a href="admin.php?delete=<?php echo $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus?')" style="color:red;">Hapus</a>
+                            <a href="/admin.php?delete=<?php echo $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus?')" style="color:red;">Hapus</a>
                         </td>
                     </tr>
                     <?php endwhile; ?>
@@ -126,8 +126,8 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
             </table>
         </div>
 
-        <a href="index.php" style="display:block; margin-top:20px;">Lihat Halaman Utama</a>
-        <a href="logout.php" style="display:block; margin-top:10px; color:red; font-size:12px;">Keluar</a>
+        <a href="/" style="display:block; margin-top:20px;">Lihat Halaman Utama</a>
+        <a href="/logout.php" style="display:block; margin-top:10px; color:red; font-size:12px;">Keluar</a>
     </div>
 </body>
 </html>

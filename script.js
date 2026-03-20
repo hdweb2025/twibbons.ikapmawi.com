@@ -34,7 +34,7 @@ if (canvas) {
             const formData = new FormData();
             formData.append('photo', file);
 
-            fetch('upload_photo.php', {
+            fetch('/upload_photo.php', {
                 method: 'POST',
                 body: formData
             })
@@ -121,7 +121,7 @@ if (canvas) {
         const eventId = canvas.getAttribute('data-event-id');
         const formData = new FormData();
         formData.append('event_id', eventId);
-        fetch('record_usage.php', {
+        fetch('/record_usage.php', {
             method: 'POST',
             body: formData
         });

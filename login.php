@@ -31,13 +31,13 @@ if (isset($_POST['login'])) {
 <head>
     <title>Login IKAPMAWI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="assets/icon.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="/assets/icon.png">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <img src="assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
+            <img src="/assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
             <h2>Login Alumni</h2>
         </div>
         <form method="POST">

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Daftar Alumni - Twibbon IKAPMAWI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="assets/icon.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="/assets/icon.png">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <?php
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <div class="container">
     <div class="header">
-        <img src="assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
+        <img src="/assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
         <h2>Daftar Alumni</h2>
     </div>
     <?php if(isset($error)) echo "<p style='color:red'>$error</p>"; ?>
