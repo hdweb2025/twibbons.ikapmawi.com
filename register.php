@@ -22,7 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php if(isset($error)) echo "<p style='color:red'>$error</p>"; ?>
     <form method="POST">
         <input type="text" name="nama" placeholder="Nama Lengkap" required>
-        <input type="number" name="tahun" placeholder="Tahun Lulus (Contoh: 2015)" required>
+        <select name="tahun" required>
+            <option value="" disabled selected>Pilih Tahun Lulus</option>
+            <?php for ($i = 2027; $i >= 1950; $i--): ?>
+                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+            <?php endfor; ?>
+        </select>
         <input type="text" name="hp" placeholder="Nomor HP/WhatsApp" required>
         <input type="password" name="password" placeholder="Password" required>
         <button type="submit" class="btn-primary">Buat Akun</button>

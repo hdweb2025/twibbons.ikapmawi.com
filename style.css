@@ -31,6 +31,18 @@ input {
 }
 input:focus { border-color: #1a5c2e; box-shadow: 0 0 0 2px rgba(26, 92, 46, 0.1); }
 
+select {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+    background-color: white; /* Ensure background is white */
+}
+
+select:focus { border-color: #1a5c2e; box-shadow: 0 0 0 2px rgba(26, 92, 46, 0.1); }
+
 /* Buttons */
 .btn-primary {
     background: #1a5c2e;
