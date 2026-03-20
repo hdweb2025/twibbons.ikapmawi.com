@@ -33,7 +33,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 
     <?php if ($event): // If a specific event is being viewed ?>
         <?php if (isset($_SESSION['user'])): // If user is logged in, show editor ?>
-            <p>Terima Kasih atas Partisipasi Anda, <br> Silahkan Upload Foto </p>
+            <p style="text-align:center;">Terima Kasih atas Partisipasi Anda, <br> Silahkan Upload Foto </p>
 
             <!-- File upload control placed before the template preview -->
             <div class="controls">
