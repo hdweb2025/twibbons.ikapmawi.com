@@ -29,7 +29,9 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
         <?php if (!isset($_SESSION['user'])): ?>
             <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI">
         <?php endif; ?>
-        <h3><?php echo ($event) ? $event['name'] : 'Galeri Twibbon'; ?></h3>
+</div>
+<h3><?php echo ($event) ? $event['name'] : 'Galeri Twibbon'; ?></h3>
+<div class="container">
     </div>
 
     <?php if ($event): // If a specific event is being viewed ?>
