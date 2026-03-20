@@ -64,18 +64,20 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
             <a href="/logout.php" style="display:block; margin-top:20px; text-align:center; color:red; font-size:12px;">Keluar</a>
         <?php else: // If user is not logged in, show login prompt ?>
             <div class="login-prompt">
-                <p>
-                    Ingin membuat Twibbon <b><?php echo $event['name']; ?></b>?<br>
-                    Ayo Gabung dulu dengan <b>ikapmawi.</b>
-                </p>
+                <div class="prompt-icon">✨</div>
+                <h3 style="margin-bottom: 20px;">Gunakan Desain Eksklusif dari <b>ikapmawi.</b></h3>
+                
                 <?php 
-                    $login_url = "/login.php?redirect=" . urlencode($event['slug'] . ".php");
-                    $register_url = "/register.php?redirect=" . urlencode($event['slug'] . ".php");
+                    $current_slug = $event['slug'];
+                    $login_url = "/login.php?redirect=" . urlencode($current_slug);
+                    $register_url = "/register.php?redirect=" . urlencode($current_slug);
                 ?>
-                <a href="<?php echo $register_url; ?>" class="btn-primary">Buat Twibbon</a>
-                <p style="margin-top: 20px; font-size: 14px; color: #666;">Sudah Punya Akun? 
-                    <a href="<?php echo $login_url; ?>" class="btn-link">Masuk di sini</a>
-                </p>
+
+                <div class="prompt-actions">
+                    <a href="<?php echo $register_url; ?>" class="btn-primary">Daftar Alumni</a>
+                    <div class="divider"><span>atau</span></div>
+                    <a href="<?php echo $login_url; ?>" class="btn-link">Sudah punya akun? <b>Masuk</b></a>
+                </div>
             </div>
         <?php endif; ?>
     <?php else: // If no specific event, show the gallery ?>
