@@ -39,7 +39,7 @@
     }
 
     function updateSlider() {
-        if (zoomSlider) min/max slider secara dinamis jika diperlukan agar tidak membatasi ukuran foto
+        if (zoomSlider) {
             if (imgScale < parseFloat(zoomSlider.min)) zoomSlider.min = (imgScale * 0.5).toFixed(3);
             if (imgScale > parseFloat(zoomSlider.max)) zoomSlider.max = (imgScale * 2).toFixed(3);
             zoomSlider.value = imgScale;
@@ -47,13 +47,25 @@
     }
 
     function resetImageState() {
-        const scaleToFit = Math.g.height);
-        imgScale = scaleToCover;
-        imgX = canvas.width / 2;
-        imgY = canvas.height / 2;
+        // Area target kotak merah (Estimasi)
+        const targetX = 40; 
+        const targetY = 220;
+        const targetW = 570;
+        const targetH = 570;
+
+        // Hitung scale agar foto menutupi area kotak merah (bukan seluruh canvas)
+        const scaleW = targetW / userImg.width;
+        const scaleH = targetH / userImg.height;
+        imgScale = Math.max(scaleW, scaleH);
+        
+        // Posisikan foto tepat di tengah area kotak merah
+        // Menggunakan titik tengah karena di draw(), posisi dihitung dari titik pusat (-width/2)
+        imgX = targetX + targetW / 2;
+        imgY = targetY + targetH / 2;
+        
         if (zoomSlider) {
-            zoomSlider.min = (scaleToFit * 0.1).toFixed(3); // Memungkinkan perkecil hingga jauh di bawah ukuran kanvas
-            zoomSlider.max = (scaleToCover * 5).toFixed(3);
+            zoomSlider.min = (Math.min(scaleW, scaleH) * 0.1).toFixed(3);
+            zoomSlider.max = (imgScale * 5).toFixed(3);
         }
         updateSlider();
         draw();
