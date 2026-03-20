@@ -132,3 +132,41 @@ canvas { width: 100%; height: auto; cursor: move; }
         overflow-x: auto;
     }
 }
+
+/* Twibbon Gallery Styles */
+.twibbon-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.twibbon-card {
+    display: block;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.twibbon-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.twibbon-card-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    background-color: #f9f9f9;
+}
+
+.twibbon-card-title {
+    padding: 15px;
+    font-weight: 600;
+    text-align: center;
+    background-color: #fff;
+}
