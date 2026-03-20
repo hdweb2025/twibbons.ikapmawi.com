@@ -39,13 +39,22 @@
     }
 
     function updateSlider() {
-        if (zoomSlider) zoomSlider.value = imgScale;
+        if (zoomSlider) min/max slider secara dinamis jika diperlukan agar tidak membatasi ukuran foto
+            if (imgScale < parseFloat(zoomSlider.min)) zoomSlider.min = (imgScale * 0.5).toFixed(3);
+            if (imgScale > parseFloat(zoomSlider.max)) zoomSlider.max = (imgScale * 2).toFixed(3);
+            zoomSlider.value = imgScale;
+        }
     }
 
     function resetImageState() {
-        imgScale = Math.max(canvas.width / userImg.width, canvas.height / userImg.height);
+        const scaleToFit = Math.g.height);
+        imgScale = scaleToCover;
         imgX = canvas.width / 2;
         imgY = canvas.height / 2;
+        if (zoomSlider) {
+            zoomSlider.min = (scaleToFit * 0.1).toFixed(3); // Memungkinkan perkecil hingga jauh di bawah ukuran kanvas
+            zoomSlider.max = (scaleToCover * 5).toFixed(3);
+        }
         updateSlider();
         draw();
     }
@@ -81,6 +90,17 @@
     // --- MOUSE & TOUCH ---
     let startX, startY;
 
+    // Perhitungan koordinat yang akurat mengatasi rasio CSS saat kanvas mengecil di HP/Desktop
+    function getPointerPos(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return {
+            x: (clientX - rect.left) * scaleX,
+            y: (clientY - rect.top) * scaleY
+        };
+    }
+
     function handlePanStart(x, y) {
         isDragging = true;
         startX = x;
@@ -101,49 +121,61 @@
         isDragging = false;
     }
 
-    canvas.addEventListener('mousedown', (e) => handlePanStart(e.offsetX, e.offsetY));
-    canvas.addEventListener('mousemove', (e) => handlePanMove(e.offsetX, e.offsetY));
+    canvas.addEventListener('mousedown', (e) => {
+        const pos = getPointerPos(e.clientX, e.clientY);
+        handlePanStart(pos.x, pos.y);{
+        const pos = getPointerPos(e.clientX, e.clientY);
+        handlePanMove(pos.x, pos.y);
+    });
     window.addEventListener('mouseup', handlePanEnd);
     canvas.addEventListener('mouseleave', handlePanEnd);
 
+    // Mengaktifkan fitur ZOOM menggunakan scroll (Mouse Wheel) seperti tertulis di UI index.php
+    canvas.addEventListener('wheel', (e) => {
+        if (!userImg.src) return;
+        e.preventDefault();
+        const zoomAmount = e.deltaY > 0 ? 0.95 : 1.05;
+        
+        const pos = getPointerPos(e.clientX, e.clientY);
+        imgX = pos.x - (pos.x - imgX) * zoomAmount;
+        imgY = pos.y - (pos.y - imgY) * zoomAmount;
+        imgScale *= zoomAmount;
+        
+        updateSlider();
+        draw();
+    }, { passive: false });
+
     canvas.addEventListener('touchstart', (e) => {
         if (e.touches.length === 1) {
-            handlePanStart(e.touches[0].pageX, e.touches[0].pageY);
+            const pos = getPointerPos(e.touches[0].clientX, e.touches[0].clientY);
+            handlePanStart(pos.x, pos.y);
         } else if (e.touches.length === 2) {
             lastPinchDist = getDist(e.touches[0], e.touches[1]);
-        }
-    }, { passive: true });
+        }ve: true });
 
     canvas.addEventListener('touchmove', (e) => {
         e.preventDefault();
         if (e.touches.length === 1) {
-            handlePanMove(e.touches[0].pageX, e.touches[0].pageY);
+            const pos = getPointerPos(e.touches[0].clientX, e.touches[0].clientY);
+            handlePanMove(pos.x, pos.y);
         } else if (e.touches.length === 2) {
             const currentDist = getDist(e.touches[0], e.touches[1]);
             if (lastPinchDist > 0) {
-                const scaleFactor = currentDist / lastPinchDist;
                 const midpoint = getMidpoint(e.touches[0], e.touches[1]);
-                const rect = canvas.getBoundingClientRect();
-                const mouseX = midpoint.x - rect.left;
-                const mouseY = midpoint.y - rect.top;
+                const pos = getPointerPos(midpoint.x, midpoint.y);
 
-                imgX = mouseX - (mouseX - imgX) * scaleFactor;
-                imgY = mouseY - (mouseY - imgY) * scaleFactor;
+                imgX = pos.x - (pos.x - imgX) * scaleFactor;
+                imgY = pos.y - (pos.y - imgY) * scaleFactor;
                 imgScale *= scaleFactor;
                 updateSlider();
-            }
-            lastPinchDist = currentDist;
-            draw();
         }
     }, { passive: false });
-
-    canvas.addEventListener('touchend', (e) => {
-        if (e.touches.length < 2) lastPinchDist = 0;
+ength < 2) lastPinchDist = 0;
         if (e.touches.length < 1) handlePanEnd();
     });
 
-    function getDist(t1, t2) { return Math.hypot(t1.pageX - t2.pageX, t1.pageY - t2.pageY); }
-    function getMidpoint(t1, t2) { return { x: (t1.pageX + t2.pageX) / 2, y: (t1.pageY + t2.pageY) / 2 }; }
+    function getDist(t1, t2) { return Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY); }
+    function getMidpoint(t1, t2) { return { x: (t1.clientX + t2.clientX) / 2, y: (t1.clientY + t2.clientY) / 2 }; }
 
     // --- DOWNLOAD ---
     downloadBtn.addEventListener('click', () => {
@@ -152,8 +184,6 @@
         link.href = canvas.toDataURL('image/png');
         link.click();
         
-        const fd = new FormData();
-        fd.append('event_id', canvas.getAttribute('data-event-id'));
-        fetch('/record_usage.php', { method: 'POST', body: fd });
+
     });
 })();
