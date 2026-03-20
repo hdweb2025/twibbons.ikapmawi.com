@@ -32,19 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="container">
     <div class="header">
         <img src="/assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
-        <h2>Daftar Alumni</h2>
-        <p style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 25px;">Mari bergabung untuk membuat twibbon momen spesial kita.</p>
+        <h2>Kamu Alumni MWI ?</h2>
+        <p style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 25px;">Luangkan Sejenak untuk Beri Tahu kami, anda Alumni Tahun Berapa?</p>
     </div>
     <?php if(isset($error)) echo "<p style='color:#e74c3c; background:#fadbd8; padding:12px; border-radius:8px; text-align:center; font-size:14px; margin: 0 auto 20px auto; max-width: 400px;'>$error</p>"; ?>
     <form method="POST">
-        <input type="text" name="nama" placeholder="Nama Lengkap" required>
         <select name="tahun" required>
-            <option value="" disabled selected>Pilih Tahun Lulus</option>
+            <option value="" disabled selected>Alumni Tahun</option>
             <?php for ($i = 2027; $i >= 1950; $i--): ?>
                 <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
             <?php endfor; ?>
         </select>
-        <input type="text" name="hp" placeholder="Nomor HP/WhatsApp (Gunakan ini untuk masuk)" required>
+        <input type="text" name="nama" placeholder="Nama Lengkap Anda" required>
+        <input type="text" name="hp" placeholder="No HP Anda" required>
         <!-- <input type="password" name="password" placeholder="Password" required> -->
         <button type="submit" class="btn-primary">Buat Akun</button>
     </form>
