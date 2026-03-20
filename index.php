@@ -58,18 +58,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                 $usage_res = mysqli_query($conn, "SELECT users.nama_lengkap FROM event_usage JOIN users ON event_usage.user_id = users.id WHERE event_usage.event_id = $current_event_id ORDER BY event_usage.created_at DESC");
                 $total_usage = mysqli_num_rows($usage_res);
                 ?>
-                <h4>Telah Digunakan oleh (<?php echo $total_usage; ?>):</h4>
-                <div class="user-list">
-                    <?php if ($total_usage == 0): ?>
-                        <p class="empty-list">Jadilah yang pertama menggunakan twibbon ini!</p>
-                    <?php else: ?>
-                        <ul>
-                            <?php while($user_row = mysqli_fetch_assoc($usage_res)): ?>
-                                <li><?php echo $user_row['nama_lengkap']; ?></li>
-                            <?php endwhile; ?>
-                        </ul>
-                    <?php endif; ?>
-                </div>
+                <h4 style="text-align: center; color: #555; margin-top: 10px;">Telah digunakan oleh ( <?php echo $total_usage; ?> ) Alumni MWI</h4>
             </div>
             <a href="/logout.php" style="display:block; margin-top:20px; color:red; font-size:12px;">Keluar</a>
         <?php else: // If user is not logged in, show login prompt ?>
