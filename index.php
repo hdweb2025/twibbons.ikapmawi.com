@@ -94,14 +94,16 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                 <?php endwhile; ?>
             <?php endif; ?>
         </div>
-        <?php if(!isset($_SESSION['user'])): ?>
-            <div style="text-align: center; margin-top: 30px;">
-                <p>Sudah punya akun? <a href="/login.php">Masuk di sini</a></p>
-            </div>
-        <?php endif; ?>
     <?php endif; ?>
 
 </div>
+
+<footer class="site-footer">
+    <p>&copy; <?php echo date('Y'); ?> IKAPMAWI. All Rights Reserved.</p>
+    <?php if(!isset($_SESSION['user'])): ?>
+        <p><a href="/login.php">Admin Login</a></p>
+    <?php endif; ?>
+</footer>
 
 <?php if (isset($_SESSION['user']) && $event): ?>
 <script src="/script.js"></script>
