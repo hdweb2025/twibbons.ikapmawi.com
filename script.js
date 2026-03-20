@@ -1,191 +1,153 @@
+(function() {
     const canvas = document.getElementById('mainCanvas');
+    if (!canvas) return;
 
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        const upload = document.getElementById('upload');
-        const downloadBtn = document.getElementById('download');
-        const zoomSlider = document.getElementById('zoomSlider');
+    const ctx = canvas.getContext('2d');
+    const upload = document.getElementById('upload');
+    const downloadBtn = document.getElementById('download');
+    const zoomSlider = document.getElementById('zoomSlider');
 
-        let userImg = new Image();
-        let templateImg = new Image();
+    let userImg = new Image();
+    let templateImg = new Image();
 
-        // State for photo positioning
-        let imgX = 0, imgY = 0, imgScale = 1;
-        let isDragging = false;
-        let startX, startY;
+    // State
+    let imgX = 0, imgY = 0, imgScale = 1;
+    let isDragging = false;
+    let startX, startY;
+    let lastTouchX = 0, lastTouchY = 0, lastPinchDist = 0;
+    let needsDraw = true;
 
-        // Mobile touch state
-        let lastTouchX = 0, lastTouchY = 0;
-        let lastPinchDist = 0;
+    // Load template
+    const templateSrc = canvas.getAttribute('data-template');
+    if (templateSrc) {
+        templateImg.crossOrigin = "anonymous";
+        templateImg.src = templateSrc;
+        templateImg.onload = () => { needsDraw = true; };
+    }
 
-        // Update slider value
-        function updateSlider() {
-            if (zoomSlider) zoomSlider.value = imgScale;
+    // Animation Loop for Real-time rendering
+    function animate() {
+        if (needsDraw) {
+            draw();
+            needsDraw = false;
         }
+        requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
 
-        // Event listener for slider
-        if (zoomSlider) {
-            zoomSlider.addEventListener('input', (e) => {
-                imgScale = parseFloat(e.target.value);
-                draw();
-            });
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (userImg.src) {
+            ctx.drawImage(userImg, imgX, imgY, userImg.width * imgScale, userImg.height * imgScale);
         }
-
-        // Load template from the selected event
-        const templateSrc = canvas.getAttribute('data-template');
-        if (templateSrc) {
-            templateImg.crossOrigin = "anonymous"; // Hindari isu CORS jika perlu
-            templateImg.src = templateSrc;
-            templateImg.onload = () => {
-                console.log("Template loaded:", templateSrc);
-                draw();
-            };
-            templateImg.onerror = () => {
-                console.error("Failed to load template:", templateSrc);
-            };
+        if (templateImg.complete) {
+            ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
         }
+    }
 
-        upload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                // First, upload the original photo to the server
-                const formData = new FormData();
-                formData.append('photo', file);
+    function updateSlider() {
+        if (zoomSlider) zoomSlider.value = imgScale;
+    }
 
-                fetch('/upload_photo.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        alert('Gagal mengunggah foto: ' + data.error);
-                        return;
-                    }
-
-                    // If upload is successful, then process the image for the canvas
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        userImg.src = event.target.result;
-                        userImg.onload = () => {
-                            // Center the image initially
-                            imgScale = Math.max(canvas.width / userImg.width, canvas.height / userImg.height);
-                            imgX = (canvas.width - userImg.width * imgScale) / 2;
-                            imgY = (canvas.height - userImg.height * imgScale) / 2;
-                            downloadBtn.disabled = false;
-                            updateSlider();
-                            draw();
-                        };
-                    };
-                    reader.readAsDataURL(file);
-                })
-                .catch(error => {
-                    console.error('Upload error:', error);
-                    alert('Terjadi kesalahan saat mengunggah foto.');
-                });
-            }
+    // Input handlers
+    if (zoomSlider) {
+        zoomSlider.addEventListener('input', (e) => {
+            imgScale = parseFloat(e.target.value);
+            needsDraw = true;
         });
+    }
 
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // 1. Draw user image
-            if (userImg.src) {
-                ctx.drawImage(userImg, imgX, imgY, userImg.width * imgScale, userImg.height * imgScale);
-            }
-            
-            // 2. Draw template on top
-            if (templateImg.complete) {
-                ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
-            }
-        }
+    upload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-        // --- MOUSE EVENTS ---
-        canvas.addEventListener('mousedown', (e) => {
-            isDragging = true;
+        const formData = new FormData();
+        formData.append('photo', file);
+        fetch('/upload_photo.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) return alert(data.error);
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    userImg.src = ev.target.result;
+                    userImg.onload = () => {
+                        imgScale = Math.max(canvas.width / userImg.width, canvas.height / userImg.height);
+                        imgX = (canvas.width - userImg.width * imgScale) / 2;
+                        imgY = (canvas.height - userImg.height * imgScale) / 2;
+                        downloadBtn.disabled = false;
+                        updateSlider();
+                        needsDraw = true;
+                    };
+                };
+                reader.readAsDataURL(file);
+            });
+    });
+
+    // --- MOUSE ---
+    canvas.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.offsetX;
+        startY = e.offsetY;
+    });
+    window.addEventListener('mouseup', () => isDragging = false);
+    canvas.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            imgX += (e.offsetX - startX);
+            imgY += (e.offsetY - startY);
             startX = e.offsetX;
             startY = e.offsetY;
-        });
-
-        window.addEventListener('mouseup', () => isDragging = false);
-
-        canvas.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                const dx = e.offsetX - startX;
-                const dy = e.offsetY - startY;
-                imgX += dx;
-                imgY += dy;
-                startX = e.offsetX;
-                startY = e.offsetY;
-                draw();
-            }
-        });
-
-        // Zoom with mouse wheel
-        canvas.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            const scaleFactor = 1.1;
-            if (e.deltaY < 0) imgScale *= scaleFactor;
-            else imgScale /= scaleFactor;
-            updateSlider();
-            draw();
-        }, { passive: false });
-
-        // --- TOUCH EVENTS (MOBILE) ---
-        function getDistance(t1, t2) {
-            return Math.hypot(t1.pageX - t2.pageX, t1.pageY - t2.pageY);
+            needsDraw = true;
         }
+    });
+    canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.05 : 0.95;
+        imgScale *= factor;
+        updateSlider();
+        needsDraw = true;
+    }, { passive: false });
 
-        canvas.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                lastTouchX = e.touches[0].pageX;
-                lastTouchY = e.touches[0].pageY;
-            } else if (e.touches.length === 2) {
-                lastPinchDist = getDistance(e.touches[0], e.touches[1]);
+    // --- TOUCH (MOBILE) ---
+    function getDist(t1, t2) { return Math.hypot(t1.pageX - t2.pageX, t1.pageY - t2.pageY); }
+
+    canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+            lastTouchX = e.touches[0].pageX;
+            lastTouchY = e.touches[0].pageY;
+        } else if (e.touches.length === 2) {
+            lastPinchDist = getDist(e.touches[0], e.touches[1]);
+        }
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+            imgX += (e.touches[0].pageX - lastTouchX);
+            imgY += (e.touches[0].pageY - lastTouchY);
+            lastTouchX = e.touches[0].pageX;
+            lastTouchY = e.touches[0].pageY;
+        } else if (e.touches.length === 2) {
+            const dist = getDist(e.touches[0], e.touches[1]);
+            if (lastPinchDist > 0) {
+                imgScale *= (dist / lastPinchDist);
+                updateSlider();
             }
-        }, { passive: true });
+            lastPinchDist = dist;
+        }
+        needsDraw = true;
+    }, { passive: false });
 
-        canvas.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 1) {
-                // Dragging
-                const dx = e.touches[0].pageX - lastTouchX;
-                const dy = e.touches[0].pageY - lastTouchY;
-                imgX += dx;
-                imgY += dy;
-                lastTouchX = e.touches[0].pageX;
-                lastTouchY = e.touches[0].pageY;
-                e.preventDefault(); // Prevent page scroll only when dragging on canvas
-            } else if (e.touches.length === 2) {
-                // Pinch to Zoom
-                const currentDist = getDistance(e.touches[0], e.touches[1]);
-                if (lastPinchDist > 0) {
-                    const scaleFactor = currentDist / lastPinchDist;
-                    imgScale *= scaleFactor;
-                    updateSlider();
-                }
-                lastPinchDist = currentDist;
-                e.preventDefault(); // Prevent page zoom
-            }
-            draw();
-        }, { passive: false });
+    canvas.addEventListener('touchend', () => { lastPinchDist = 0; }, { passive: false });
 
-        canvas.addEventListener('touchend', (e) => {
-            lastPinchDist = 0;
-        }, { passive: true });
-
-        downloadBtn.addEventListener('click', () => {
+    // --- DOWNLOAD ---
+    downloadBtn.addEventListener('click', () => {
         const link = document.createElement('a');
         link.download = 'twibbon-ikapmawi.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
-
-        // Record usage in background
-        const eventId = canvas.getAttribute('data-event-id');
-        const formData = new FormData();
-        formData.append('event_id', eventId);
-        fetch('/record_usage.php', {
-            method: 'POST',
-            body: formData
-        });
+        
+        const fd = new FormData();
+        fd.append('event_id', canvas.getAttribute('data-event-id'));
+        fetch('/record_usage.php', { method: 'POST', body: fd });
     });
-}
+})();
