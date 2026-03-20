@@ -38,9 +38,12 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
             <canvas id="mainCanvas" width="1080" height="1080" data-template="/<?php echo $event['template']; ?>" data-event-id="<?php echo $event['id']; ?>"></canvas>
         </div>
 
-        <div class="zoom-control" style="margin-bottom: 20px;">
-            <label style="display:block; font-size:12px; margin-bottom: 5px; color:#666;">Atur Ukuran Foto:</label>
-            <input type="range" id="zoomSlider" min="0.05" max="3" step="0.005" value="1" style="width: 100%; height: 30px; cursor: pointer;">
+        <div class="zoom-control">
+            <label>Atur Ukuran Foto:</label>
+            <div class="zoom-slider-container">
+                <input type="range" id="zoomSlider" min="0.05" max="3" step="0.005" value="1">
+                <button id="resetBtn" class="btn-reset">Reset</button>
+            </div>
         </div>
 
         <div class="controls">

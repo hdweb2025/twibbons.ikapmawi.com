@@ -6,6 +6,7 @@
     const upload = document.getElementById('upload');
     const downloadBtn = document.getElementById('download');
     const zoomSlider = document.getElementById('zoomSlider');
+    const resetBtn = document.getElementById('resetBtn');
 
     let userImg = new Image();
     let templateImg = new Image();
@@ -21,7 +22,7 @@
     if (templateSrc) {
         templateImg.crossOrigin = "anonymous";
         templateImg.src = templateSrc;
-        templateImg.onload = () => { draw(); };
+        templateImg.onload = draw;
     }
 
     function draw() {
@@ -35,25 +36,31 @@
     }
 
     function updateSlider() {
-        if (zoomSlider) {
-            zoomSlider.value = imgScale;
-        }
+        if (zoomSlider) zoomSlider.value = imgScale;
     }
 
-    // Input handlers
+    function resetImageState() {
+        // Default: Cover the canvas (zoom-to-fill)
+        imgScale = Math.max(canvas.width / userImg.width, canvas.height / userImg.height);
+        imgX = (canvas.width - userImg.width * imgScale) / 2;
+        imgY = (canvas.height - userImg.height * imgScale) / 2;
+        updateSlider();
+        draw();
+    }
+
+    // --- Event Listeners ---
     if (zoomSlider) {
-        ['input', 'change'].forEach(evt => {
-            zoomSlider.addEventListener(evt, (e) => {
-                const oldScale = imgScale;
-                imgScale = parseFloat(e.target.value);
-                
-                // Keep image centered while zooming via slider
-                imgX -= (userImg.width * imgScale - userImg.width * oldScale) / 2;
-                imgY -= (userImg.height * imgScale - userImg.height * oldScale) / 2;
-                
-                draw();
-            });
+        zoomSlider.addEventListener('input', (e) => {
+            const oldScale = imgScale;
+            imgScale = parseFloat(e.target.value);
+            imgX -= (userImg.width * (imgScale - oldScale)) / 2;
+            imgY -= (userImg.height * (imgScale - oldScale)) / 2;
+            draw();
         });
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetImageState);
     }
 
     upload.addEventListener('change', (e) => {
@@ -70,16 +77,8 @@
                 reader.onload = (ev) => {
                     userImg.src = ev.target.result;
                     userImg.onload = () => {
-                        // DEFAULT: Fit to width of canvas
-                        imgScale = canvas.width / userImg.width;
-                        
-                        // Center the image
-                        imgX = (canvas.width - userImg.width * imgScale) / 2;
-                        imgY = (canvas.height - userImg.height * imgScale) / 2;
-                        
+                        resetImageState();
                         downloadBtn.disabled = false;
-                        updateSlider();
-                        draw();
                     };
                 };
                 reader.readAsDataURL(file);
@@ -95,11 +94,9 @@
     window.addEventListener('mouseup', () => isDragging = false);
     canvas.addEventListener('mousemove', (e) => {
         if (isDragging) {
-            imgX += (e.offsetX - startX);
-            imgY += (e.offsetY - startY);
-            startX = e.offsetX;
-            startY = e.offsetY;
-            draw(); // Draw immediately
+            imgX += e.movementX;
+            imgY += e.movementY;
+            draw();
         }
     });
     canvas.addEventListener('wheel', (e) => {
@@ -107,44 +104,53 @@
         const factor = e.deltaY < 0 ? 1.05 : 0.95;
         imgScale *= factor;
         updateSlider();
-        draw(); // Draw immediately
+        draw();
     }, { passive: false });
 
     // --- TOUCH (MOBILE) ---
     function getDist(t1, t2) { return Math.hypot(t1.pageX - t2.pageX, t1.pageY - t2.pageY); }
+    function getMidpoint(t1, t2) { return { x: (t1.pageX + t2.pageX) / 2, y: (t1.pageY + t2.pageY) / 2 }; }
 
     canvas.addEventListener('touchstart', (e) => {
-        // Only prevent default if we're on the canvas to avoid blocking other elements
-        if (e.target === canvas) e.preventDefault();
-        
         if (e.touches.length === 1) {
+            isDragging = true;
             lastTouchX = e.touches[0].pageX;
             lastTouchY = e.touches[0].pageY;
         } else if (e.touches.length === 2) {
             lastPinchDist = getDist(e.touches[0], e.touches[1]);
         }
-    }, { passive: false });
+    }, { passive: true });
 
     canvas.addEventListener('touchmove', (e) => {
-        if (e.target === canvas) e.preventDefault();
-        if (e.touches.length === 1) {
-            imgX += (e.touches[0].pageX - lastTouchX);
-            imgY += (e.touches[0].pageY - lastTouchY);
+        e.preventDefault();
+        if (e.touches.length === 1 && isDragging) {
+            imgX += e.touches[0].pageX - lastTouchX;
+            imgY += e.touches[0].pageY - lastTouchY;
             lastTouchX = e.touches[0].pageX;
             lastTouchY = e.touches[0].pageY;
         } else if (e.touches.length === 2) {
-            const dist = getDist(e.touches[0], e.touches[1]);
+            const currentDist = getDist(e.touches[0], e.touches[1]);
             if (lastPinchDist > 0) {
-                const scaleFactor = dist / lastPinchDist;
-                imgScale = Math.max(0.001, imgScale * scaleFactor); // Prevent scale from hitting 0
+                const scaleFactor = currentDist / lastPinchDist;
+                const midpoint = getMidpoint(e.touches[0], e.touches[1]);
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = midpoint.x - rect.left;
+                const mouseY = midpoint.y - rect.top;
+
+                imgX = mouseX - (mouseX - imgX) * scaleFactor;
+                imgY = mouseY - (mouseY - imgY) * scaleFactor;
+                imgScale *= scaleFactor;
                 updateSlider();
             }
-            lastPinchDist = dist;
+            lastPinchDist = currentDist;
         }
-        draw(); // Draw immediately
+        draw();
     }, { passive: false });
 
-    canvas.addEventListener('touchend', () => { lastPinchDist = 0; }, { passive: false });
+    canvas.addEventListener('touchend', () => {
+        isDragging = false;
+        lastPinchDist = 0;
+    }, { passive: true });
 
     // --- DOWNLOAD ---
     downloadBtn.addEventListener('click', () => {

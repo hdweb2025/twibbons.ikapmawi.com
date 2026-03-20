@@ -1,294 +1,36 @@
-/* Reset & Base */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: #f0f2f5;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+.zoom-control {
+    margin-bottom: 20px;
 }
 
-.container {
-    background: #ffffff;
-    width: 90%;
-    max-width: 400px;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-    text-align: center;
-    margin: auto;
-    flex-grow: 1; /* Allow container to grow to push footer down */
+.zoom-control label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: #666;
 }
 
-h2 { margin-bottom: 20px; color: #1a5c2e; font-size: 24px; } /* Hijau khas identitas muslim/organisasi */
-
-.header {
+.zoom-slider-container {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    gap: 15px;
+    gap: 10px;
 }
 
-.header img {
-    height: 40px; /* Diperkecil dari 50px */
-}
-
-.header h2 {
-    margin-bottom: 0;
-    font-size: 18px; /* Diperkecil agar seimbang */
-}
-
-/* Form Styling */
-form { display: flex; flex-direction: column; gap: 15px; }
-input {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    outline: none;
-    transition: 0.3s;
-}
-input:focus { border-color: #1a5c2e; box-shadow: 0 0 0 2px rgba(26, 92, 46, 0.1); }
-
-select {
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    outline: none;
-    transition: 0.3s;
-    background-color: white; /* Ensure background is white */
-}
-
-select:focus { border-color: #1a5c2e; box-shadow: 0 0 0 2px rgba(26, 92, 46, 0.1); }
-
-/* Buttons */
-.btn-primary {
-    background: #1a5c2e;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.btn-primary:hover { background: #134522; }
-
-.btn-secondary {
-    background: #6c757d;
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn-secondary:hover { background: #5a6268; }
-
-/* Canvas Area */
-.canvas-wrapper {
-    margin: 20px 0;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #fafafa;
-}
-canvas { width: 100%; height: auto; cursor: move; }
-
-.footer-text { margin-top: 15px; font-size: 14px; color: #666; }
-.footer-text a { color: #1a5c2e; text-decoration: none; font-weight: bold; }
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .twibbon-gallery {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-}
-
-@media (max-width: 480px) {
-    body {
-        padding: 0;
-    }
-
-    .container {
-        width: 100%;
-        max-width: 100%;
-        padding: 20px;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    .header img {
-        height: 30px;
-    }
-
-    .header h2 {
-        font-size: 18px;
-    }
-
-    .twibbon-gallery {
-        grid-template-columns: 1fr; /* Single column on very small screens */
-        gap: 15px;
-    }
-
-    .usage-stats {
-        padding: 12px;
-    }
-
-    .usage-stats h4 {
-        font-size: 15px;
-    }
-}
-
-/* Twibbon Gallery Styles */
-.twibbon-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-}
-
-.twibbon-card {
-    display: block;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    overflow: hidden;
-    text-decoration: none;
-    color: #333;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.twibbon-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-}
-
-.twibbon-card-img {
+#zoomSlider {
     width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    background-color: #f9f9f9;
+    height: 30px;
+    cursor: pointer;
 }
 
-.twibbon-card-title {
-    padding: 15px;
-    font-weight: 600;
-    text-align: center;
-    background-color: #fff;
-}
-
-/* Login Prompt Styles */
-.login-prompt {
-    text-align: center;
-    padding: 20px 0;
-}
-
-.login-prompt p {
-    font-size: 16px;
-    margin-bottom: 25px;
-    line-height: 1.6;
-}
-
-.login-prompt .btn-primary,
-.login-prompt .btn-secondary {
-    text-decoration: none;
-    margin-bottom: 10px;
-    display: block;
-}
-
-.btn-link {
-    color: #1a5c2e;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.btn-link:hover {
-    text-decoration: underline;
-}
-
-.btn-warning {
-    background: #f39c12; /* Orange color */
+.btn-reset {
+    background: #f1c40f;
     color: white;
-    padding: 12px;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    padding: 8px 12px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
-    display: block; /* Ensure it takes full width */
-    text-decoration: none; /* Remove underline from button */
 }
 
-.btn-warning:hover { background: #e67e22; }
-
-/* Footer Styles */
-.site-footer {
-    text-align: center;
-    padding: 20px;
-    margin-top: auto; /* Push footer to the bottom */
-    font-size: 12px;
-    color: #888;
-    width: 100%; /* Ensure footer takes full width */
-}
-
-.site-footer a {
-    color: #555;
-    text-decoration: none;
-}
-
-.site-footer a:hover {
-    text-decoration: underline;
-}
-
-/* Usage Stats Styles */
-.usage-stats {
-    margin-top: 30px;
-    text-align: left;
-    background: #f9f9f9;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 14px;
-}
-
-.usage-stats h4 {
-    color: #1a5c2e;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
-.user-list {
-    max-height: 150px;
-    overflow-y: auto;
-    color: #555;
-}
-
-.user-list ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.user-list li {
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.user-list li:last-child {
-    border-bottom: none;
-}
-
-.empty-list {
-    font-style: italic;
-    font-size: 12px;
-    color: #888;
-}
+.btn-reset:hover { background: #f39c12; }
