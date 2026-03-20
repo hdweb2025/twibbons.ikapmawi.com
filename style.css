@@ -1,0 +1,59 @@
+/* Reset & Base */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+    font-family: 'Inter', -apple-system, sans-serif; 
+    background: #f0f2f5; 
+    color: #333;
+    display: flex; justify-content: center; align-items: center; min-height: 100vh;
+}
+
+.container {
+    background: #ffffff;
+    width: 90%;
+    max-width: 400px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+h2 { margin-bottom: 20px; color: #1a5c2e; font-size: 24px; } /* Hijau khas identitas muslim/organisasi */
+
+/* Form Styling */
+form { display: flex; flex-direction: column; gap: 15px; }
+input {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+input:focus { border-color: #1a5c2e; box-shadow: 0 0 0 2px rgba(26, 92, 46, 0.1); }
+
+/* Buttons */
+.btn-primary {
+    background: #1a5c2e;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-primary:hover { background: #134522; }
+
+/* Canvas Area */
+.canvas-wrapper {
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fafafa;
+}
+canvas { width: 100%; height: auto; cursor: move; }
+
+.footer-text { margin-top: 15px; font-size: 14px; color: #666; }
+.footer-text a { color: #1a5c2e; text-decoration: none; font-weight: bold; }
