@@ -57,6 +57,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 <html>
 <head>
     <title>Admin - Twibbon IKAPMAWI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="assets/icon.png">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -81,24 +82,26 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
         <hr>
 
         <h3>Daftar Event</h3>
-        <table style="width:100%; border-collapse: collapse; margin-top:10px;">
-            <thead>
-                <tr style="background:#f4f4f4;">
-                    <th style="padding:10px; border:1px solid #ddd;">Nama Event</th>
-                    <th style="padding:10px; border:1px solid #ddd;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while($row = mysqli_fetch_assoc($events)): ?>
-                <tr>
-                    <td style="padding:10px; border:1px solid #ddd;"><?php echo $row['name']; ?></td>
-                    <td style="padding:10px; border:1px solid #ddd;">
-                        <a href="admin.php?delete=<?php echo $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus?')" style="color:red;">Hapus</a>
-                    </td>
-                </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <table style="width:100%; border-collapse: collapse; margin-top:10px;">
+                <thead>
+                    <tr style="background:#f4f4f4;">
+                        <th style="padding:10px; border:1px solid #ddd;">Nama Event</th>
+                        <th style="padding:10px; border:1px solid #ddd;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while($row = mysqli_fetch_assoc($events)): ?>
+                    <tr>
+                        <td style="padding:10px; border:1px solid #ddd;"><?php echo $row['name']; ?></td>
+                        <td style="padding:10px; border:1px solid #ddd;">
+                            <a href="admin.php?delete=<?php echo $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus?')" style="color:red;">Hapus</a>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
 
         <a href="index.php" style="display:block; margin-top:20px;">Lihat Halaman Utama</a>
         <a href="logout.php" style="display:block; margin-top:10px; color:red; font-size:12px;">Keluar</a>

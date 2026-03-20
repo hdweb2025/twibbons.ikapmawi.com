@@ -99,3 +99,35 @@ canvas { width: 100%; height: auto; cursor: move; }
 
 .footer-text { margin-top: 15px; font-size: 14px; color: #666; }
 .footer-text a { color: #1a5c2e; text-decoration: none; font-weight: bold; }
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    body {
+        align-items: flex-start; /* Align container to the top on mobile */
+        padding-top: 20px;
+    }
+
+    .container {
+        width: 100%;
+        padding: 20px;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .header {
+        gap: 10px;
+    }
+
+    .header img {
+        height: 40px;
+    }
+
+    .header h2 {
+        font-size: 20px;
+    }
+
+    /* Make admin table scrollable on mobile */
+    .table-wrapper {
+        overflow-x: auto;
+    }
+}

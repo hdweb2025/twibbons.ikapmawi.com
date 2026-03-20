@@ -29,6 +29,7 @@ if (isset($_POST['login'])) {
 <html>
 <head>
     <title>Login IKAPMAWI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="assets/icon.png">
     <link rel="stylesheet" href="style.css">
 </head>
