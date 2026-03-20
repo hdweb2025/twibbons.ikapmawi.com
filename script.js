@@ -213,6 +213,16 @@
         link.href = canvas.toDataURL('image/png');
         link.click();
         
-
+        // Catat penggunaan ke database secara diam-diam (background proses)
+        const eventId = canvas.getAttribute('data-event-id');
+        if (eventId) {
+            fetch('/track_usage.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'event_id=' + eventId
+            }).catch(err => console.error(err));
+        }
     });
 })();

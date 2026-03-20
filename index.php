@@ -58,7 +58,8 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                 $usage_res = mysqli_query($conn, "SELECT users.nama_lengkap FROM event_usage JOIN users ON event_usage.user_id = users.id WHERE event_usage.event_id = $current_event_id ORDER BY event_usage.created_at DESC");
                 $total_usage = mysqli_num_rows($usage_res);
                 ?>
-                <h4 style="text-align: center; color: #555; margin-top: 10px;">Telah digunakan oleh ( <?php echo $total_usage; ?> ) Alumni MWI</h4>
+                <h4 style="text-align: center; color: #555; margin-top: 10px;">Sebanyak <?php echo $total_usage; ?> Alumni MWI</h4>
+                <h4 style="text-align: center; color: #555; margin-top: 10px;">Berpartisipasi dengan Twibbon ini</h4>
             </div>
             <a href="/logout.php" style="display:block; margin-top:20px; color:red; font-size:12px;">Keluar</a>
         <?php else: // If user is not logged in, show login prompt ?>
