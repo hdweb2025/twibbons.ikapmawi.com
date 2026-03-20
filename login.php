@@ -15,11 +15,13 @@ if (isset($_POST['login'])) {
         $_SESSION['tahun'] = $user['tahun_alumni'];
         $_SESSION['hp'] = $user['nomor_hp']; // Store HP for admin check
         
-        // Redirect based on admin status
-        if ($user['is_admin']) {
-            header("Location: admin.php");
+        // Redirect based on redirect parameter or admin status
+        if (isset($_GET['redirect'])) {
+            header("Location: /" . $_GET['redirect']);
+        } elseif ($user['is_admin']) {
+            header("Location: /admin.php");
         } else {
-            header("Location: index.php");
+            header("Location: /");
         }
     } else {
         echo "<script>alert('Nomor HP atau Password salah!');</script>";
@@ -40,7 +42,12 @@ if (isset($_POST['login'])) {
             <img src="/assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
             <h2>Login Alumni</h2>
         </div>
-        <form method="POST">
+        <form method="GET" action="login.php" style="display:none;">
+            <?php if(isset($_GET['redirect'])): ?>
+                <input type="hidden" name="redirect" value="<?php echo $_GET['redirect']; ?>">
+            <?php endif; ?>
+        </form>
+        <form method="POST" action="login.php<?php echo isset($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : ''; ?>">
             <input type="text" name="hp" placeholder="Nomor HP" required><br>
             <input type="password" name="password" placeholder="Password" required><br>
             <button type="submit" name="login" class="btn-primary">Masuk</button>

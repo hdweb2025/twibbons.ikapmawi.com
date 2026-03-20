@@ -2,24 +2,24 @@
 session_start();
 include 'config.php';
 
-// If user is logged in, redirect to event selection
+// Get event slug regardless of login status
+$event_slug = isset($_GET['event_slug']) ? $_GET['event_slug'] : null;
+$event = null;
+
+if ($event_slug) {
+    $res = mysqli_query($conn, "SELECT * FROM events WHERE slug = '$event_slug'");
+    $event = mysqli_fetch_assoc($res);
+}
+
+// If user is logged in, show editor or event selection
 if (isset($_SESSION['user'])) {
-    $event_id = isset($_GET['event']) ? $_GET['event'] : null;
-    $event = null;
-
-    if ($event_id) {
-        $res = mysqli_query($conn, "SELECT * FROM events WHERE id = $event_id");
-        $event = mysqli_fetch_assoc($res);
-    }
-
     $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 } // For non-logged-in users, the rest of the page will show the landing content.
-
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Twibbon IKAPMAWI</title>
+    <title><?php echo ($event) ? $event['name'] . ' - Twibbon IKAPMAWI' : 'Twibbon IKAPMAWI'; ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/assets/icon.png">
     <link rel="stylesheet" href="/style.css">
@@ -89,9 +89,22 @@ if (isset($_SESSION['user'])) {
 
     <?php else: ?>
         <div class="landing-content" style="text-align: center;">
-            <p style="font-size: 18px; margin-bottom: 30px;">Selamat datang di portal Twibbon resmi IKAPMAWI. Mari meriahkan setiap momen kebersamaan kita!</p>
-            <a href="/login.php" class="btn-primary" style="text-decoration: none; margin-bottom: 10px; display: block;">Mulai Buat Twibbon</a>
-            <a href="/register.php" class="btn-secondary" style="text-decoration: none; display: block;">Daftar / Gabung Sekarang</a>
+            <?php if ($event): ?>
+                <p style="font-size: 18px; margin-bottom: 30px;">
+                    Anda ingin membuat Twibbon untuk <b><?php echo $event['name']; ?></b>?<br>
+                    Silakan masuk atau daftar terlebih dahulu.
+                </p>
+                <?php 
+                    $login_url = "/login.php?redirect=" . urlencode($event['slug'] . ".php");
+                    $register_url = "/register.php?redirect=" . urlencode($event['slug'] . ".php");
+                ?>
+                <a href="<?php echo $login_url; ?>" class="btn-primary" style="text-decoration: none; margin-bottom: 10px; display: block;">Masuk Sekarang</a>
+                <a href="<?php echo $register_url; ?>" class="btn-secondary" style="text-decoration: none; display: block;">Daftar Akun</a>
+            <?php else: ?>
+                <p style="font-size: 18px; margin-bottom: 30px;">Selamat datang di portal Twibbon resmi IKAPMAWI. Mari meriahkan setiap momen kebersamaan kita!</p>
+                <a href="/login.php" class="btn-primary" style="text-decoration: none; margin-bottom: 10px; display: block;">Mulai Buat Twibbon</a>
+                <a href="/register.php" class="btn-secondary" style="text-decoration: none; display: block;">Daftar / Gabung Sekarang</a>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
 
