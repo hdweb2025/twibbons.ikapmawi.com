@@ -70,3 +70,48 @@
 }
 
 .btn-reset:hover { background: #c0392b; }
+
+/* Gallery View */
+.twibbon-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.twibbon-card {
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    text-align: center;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.twibbon-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+.twibbon-card-img { width: 100%; max-width: 150px; height: auto; border-radius: 6px; }
+.twibbon-card-title { margin-top: 10px; font-size: 0.85rem; font-weight: 600; }
+
+/* Usage Stats & Misc */
+.usage-stats { margin-top: 30px; text-align: left; border-top: 1px solid #eee; padding-top: 20px; }
+.usage-stats h4 { font-size: 1rem; margin-bottom: 10px; color: #444; }
+.user-list { background: #f9f9f9; padding: 15px; border-radius: 8px; max-height: 200px; overflow-y: auto; }
+.user-list ul { list-style: none; }
+.user-list li { padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; color: #555; }
+.user-list li:last-child { border-bottom: none; }
+.empty-list { font-size: 0.9rem; color: #888; font-style: italic; }
+
+.site-footer { text-align: center; margin-top: 30px; font-size: 0.8rem; color: #888; }
+.site-footer a { color: #888; text-decoration: none; }
+.site-footer a:hover { text-decoration: underline; }
+
+/* Global Typography Adjustments for Mobile */
+p { margin-bottom: 10px; font-size: 0.95rem; }
+.login-prompt { text-align: center; background: #fff3cd; padding: 20px; border-radius: 8px; border: 1px solid #ffe69c; color: #664d03; margin-top: 20px; }
+.btn-link { color: #0d6efd; text-decoration: none; font-weight: bold; }
+.btn-link:hover { text-decoration: underline; }
+.controls { text-align: center; }
