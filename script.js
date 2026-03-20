@@ -135,7 +135,9 @@
 
     canvas.addEventListener('mousedown', (e) => {
         const pos = getPointerPos(e.clientX, e.clientY);
-        handlePanStart(pos.x, pos.y);{
+        handlePanStart(pos.x, pos.y);
+    });
+    canvas.addEventListener('mousemove', (e) => {
         const pos = getPointerPos(e.clientX, e.clientY);
         handlePanMove(pos.x, pos.y);
     });
@@ -163,7 +165,8 @@
             handlePanStart(pos.x, pos.y);
         } else if (e.touches.length === 2) {
             lastPinchDist = getDist(e.touches[0], e.touches[1]);
-        }ve: true });
+        }
+    }, { passive: true });
 
     canvas.addEventListener('touchmove', (e) => {
         e.preventDefault();
@@ -173,6 +176,7 @@
         } else if (e.touches.length === 2) {
             const currentDist = getDist(e.touches[0], e.touches[1]);
             if (lastPinchDist > 0) {
+                const scaleFactor = currentDist / lastPinchDist;
                 const midpoint = getMidpoint(e.touches[0], e.touches[1]);
                 const pos = getPointerPos(midpoint.x, midpoint.y);
 
@@ -180,9 +184,14 @@
                 imgY = pos.y - (pos.y - imgY) * scaleFactor;
                 imgScale *= scaleFactor;
                 updateSlider();
+                draw();
+            }
+            lastPinchDist = currentDist;
         }
     }, { passive: false });
-ength < 2) lastPinchDist = 0;
+
+    canvas.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) lastPinchDist = 0;
         if (e.touches.length < 1) handlePanEnd();
     });
 
