@@ -14,7 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nama = mysqli_real_escape_string($conn, $_POST['nama']);
     $tahun = mysqli_real_escape_string($conn, $_POST['tahun']);
     $hp = mysqli_real_escape_string($conn, $_POST['hp']);
-    $pass = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    // Password dinonaktifkan sementara, kita beri nilai default agar tidak error di database
+    $pass = password_hash('default123', PASSWORD_DEFAULT);
 
     $check = mysqli_query($conn, "SELECT id FROM users WHERE nomor_hp = '$hp'");
     if (mysqli_num_rows($check) > 0) {
@@ -41,8 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
             <?php endfor; ?>
         </select>
-        <input type="text" name="hp" placeholder="Nomor HP/WhatsApp" required>
-        <input type="password" name="password" placeholder="Password" required>
+        <input type="text" name="hp" placeholder="Nomor HP/WhatsApp (Gunakan ini untuk masuk)" required>
+        <!-- <input type="password" name="password" placeholder="Password" required> -->
         <button type="submit" class="btn-primary">Buat Akun</button>
     </form>
     <p class="footer-text">Sudah punya akun? <a href="login.php">Masuk</a></p>

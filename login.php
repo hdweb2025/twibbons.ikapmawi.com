@@ -4,12 +4,13 @@ include 'config.php';
 
 if (isset($_POST['login'])) {
     $hp = $_POST['hp'];
-    $pass = $_POST['password'];
+    // $pass = $_POST['password']; // Password dinonaktifkan sementara
 
     $result = mysqli_query($conn, "SELECT * FROM users WHERE nomor_hp = '$hp'");
     $user = mysqli_fetch_assoc($result);
 
-    if ($user && password_verify($pass, $user['password'])) {
+    // Login hanya dengan mencocokkan Nomor HP saja
+    if ($user) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user'] = $user['nama_lengkap'];
         $_SESSION['tahun'] = $user['tahun_alumni'];
@@ -25,7 +26,7 @@ if (isset($_POST['login'])) {
             header("Location: /");
         }
     } else {
-        echo "<script>alert('Nomor HP atau Password salah!');</script>";
+        echo "<script>alert('Nomor HP belum terdaftar!');</script>";
     }
 }
 ?>
@@ -50,7 +51,7 @@ if (isset($_POST['login'])) {
         </form>
         <form method="POST" action="login.php<?php echo isset($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : ''; ?>">
             <input type="text" name="hp" placeholder="Nomor HP" required><br>
-            <input type="password" name="password" placeholder="Password" required><br>
+            <!-- <input type="password" name="password" placeholder="Password" required><br> -->
             <button type="submit" name="login" class="btn-warning">Masuk</button>
         </form>
     </div>
