@@ -15,6 +15,7 @@
     let imgX = 0, imgY = 0, imgScale = 1;
     let isDragging = false;
     let lastPinchDist = 0;
+    let drawFrame = null;
 
     // Load template
     const templateSrc = canvas.getAttribute('data-template');
@@ -25,17 +26,20 @@
     }
 
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (userImg.src) {
-            ctx.save();
-            ctx.translate(imgX, imgY);
-            ctx.scale(imgScale, imgScale);
-            ctx.drawImage(userImg, -userImg.width / 2, -userImg.height / 2);
-            ctx.restore();
-        }
-        if (templateImg.complete) {
-            ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
-        }
+        if (drawFrame) cancelAnimationFrame(drawFrame);
+        drawFrame = requestAnimationFrame(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (userImg.src) {
+                ctx.save();
+                ctx.translate(imgX, imgY);
+                ctx.scale(imgScale, imgScale);
+                ctx.drawImage(userImg, -userImg.width / 2, -userImg.height / 2);
+                ctx.restore();
+            }
+            if (templateImg.complete) {
+                ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+            }
+        });
     }
 
     function updateSlider() {
@@ -73,10 +77,13 @@
 
     // --- Event Listeners ---
     if (zoomSlider) {
-        zoomSlider.addEventListener('input', (e) => {
+        const handleSliderInput = (e) => {
             imgScale = parseFloat(e.target.value);
             draw();
-        });
+        };
+        zoomSlider.addEventListener('input', handleSliderInput);
+        // Fallback tambahan agar responsif di beberapa browser mobile lama
+        zoomSlider.addEventListener('touchmove', handleSliderInput, { passive: true });
     }
 
     if (resetBtn) {
