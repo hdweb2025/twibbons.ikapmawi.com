@@ -1,3 +1,8 @@
+/* Header Styling */
+.header {
+    text-align: center;
+}
+
 /* Header Logo Styling */
 .header img {
     max-width: 50%; /* Membatasi lebar logo maksimal 50% dari elemen pembungkus/layar HP */
