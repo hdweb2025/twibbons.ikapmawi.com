@@ -82,7 +82,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                     $login_url = "/login.php?redirect=" . urlencode($event['slug'] . ".php");
                     $register_url = "/register.php?redirect=" . urlencode($event['slug'] . ".php");
                 ?>
-                <a href="<?php echo $register_url; ?>" class="btn-primary">Buat Sekarang</a>
+                <a href="<?php echo $register_url; ?>" class="btn-primary">Buat Twibbon</a>
                 <p style="margin-top: 20px; font-size: 14px; color: #666;">Sudah Punya Akun? 
                     <a href="<?php echo $login_url; ?>" class="btn-link">Masuk di sini</a>
                 </p>
