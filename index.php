@@ -48,7 +48,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
         <div class="controls">
                 <input type="file" id="upload" accept="image/*" style="display:none">
                 <label for="upload" class="btn-primary" style="display:block; margin-bottom:10px;">Pilih Foto</label>
-                <button id="download" class="btn-primary" style="width:100%; background:#3498db" disabled>Unduh Hasil</button>
+                <button id="download" class="btn-primary" style="width:100%; background:#3498db" disabled>Download Twibbon Anda</button>
                 <a href="/" style="display:block; margin-top:10px; color: #666; font-size: 12px; text-decoration: none;">Kembali ke Galeri</a>
             </div>
 
