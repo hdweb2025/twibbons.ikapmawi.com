@@ -1,0 +1,37 @@
+<?php
+session_start();
+include 'config.php';
+
+if (isset($_POST['login'])) {
+    $hp = $_POST['hp'];
+    $pass = $_POST['password'];
+
+    $result = mysqli_query($conn, "SELECT * FROM users WHERE nomor_hp = '$hp'");
+    $user = mysqli_fetch_assoc($result);
+
+    if ($user && password_verify($pass, $user['password'])) {
+        $_SESSION['user'] = $user['nama_lengkap'];
+        $_SESSION['tahun'] = $user['tahun_alumni'];
+        header("Location: twibbon.php");
+    } else {
+        echo "<script>alert('Nomor HP atau Password salah!');</script>";
+    }
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login IKAPMAWI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Login Alumni</h2>
+        <form method="POST">
+            <input type="text" name="hp" placeholder="Nomor HP" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
+            <button type="submit" name="login" class="btn-download">Masuk</button>
+        </form>
+    </div>
+</body>
+</html>
