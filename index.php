@@ -40,7 +40,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 
         <div class="zoom-control">
             <label>Resize Foto:</label>
-            <input type="range" id="zoomSlider" min="0.1" max="3" step="0.01" value="1">
+            <input type="range" id="zoomSlider" min="0.01" max="5" step="0.001" value="1">
             <button id="resetBtn" class="btn-reset">Reset Posisi</button>
         </div>
 
