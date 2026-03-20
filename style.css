@@ -102,34 +102,44 @@ canvas { width: 100%; height: auto; cursor: move; }
 .footer-text a { color: #1a5c2e; text-decoration: none; font-weight: bold; }
 
 /* Responsive Design */
+@media (max-width: 768px) {
+    .twibbon-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
 @media (max-width: 480px) {
     body {
-        align-items: center; /* Kembali ke tengah untuk mobile */
-        padding: 10px;
+        padding: 0;
     }
 
     .container {
         width: 100%;
-        padding: 15px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05); /* Kembalikan shadow tipis */
-        border-radius: 12px;
-    }
-
-    .header {
-        gap: 8px;
+        max-width: 100%;
+        padding: 20px;
+        border-radius: 0;
+        box-shadow: none;
     }
 
     .header img {
-        height: 35px;
+        height: 30px;
     }
 
     .header h2 {
-        font-size: 16px;
+        font-size: 18px;
     }
 
-    /* Make admin table scrollable on mobile */
-    .table-wrapper {
-        overflow-x: auto;
+    .twibbon-gallery {
+        grid-template-columns: 1fr; /* Single column on very small screens */
+        gap: 15px;
+    }
+
+    .usage-stats {
+        padding: 12px;
+    }
+
+    .usage-stats h4 {
+        font-size: 15px;
     }
 }
 
