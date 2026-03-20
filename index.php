@@ -77,7 +77,9 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                     $register_url = "/register.php?redirect=" . urlencode($event['slug'] . ".php");
                 ?>
                 <a href="<?php echo $register_url; ?>" class="btn-primary">Daftar Sekarang</a>
-                <a href="<?php echo $login_url; ?>" class="btn-secondary">Sudah Punya Akun? Masuk</a>
+                <p style="margin-top: 20px; font-size: 14px; color: #666;">Sudah Punya Akun? 
+                    <a href="<?php echo $login_url; ?>" class="btn-link">Masuk di sini</a>
+                </p>
             </div>
         <?php endif; ?>
     <?php else: // If no specific event, show the gallery ?>
