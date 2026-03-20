@@ -181,6 +181,25 @@ canvas { width: 100%; height: auto; cursor: move; }
     background-color: #fff;
 }
 
+/* Login Prompt Styles */
+.login-prompt {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.login-prompt p {
+    font-size: 16px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.login-prompt .btn-primary,
+.login-prompt .btn-secondary {
+    text-decoration: none;
+    margin-bottom: 10px;
+    display: block;
+}
+
 /* Footer Styles */
 .site-footer {
     text-align: center;
