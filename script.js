@@ -26,97 +26,49 @@
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
         if (userImg.src) {
-            // Simpan state canvas agar transform tidak merusak gambar lain
             ctx.save();
             ctx.translate(imgX, imgY);
             ctx.scale(imgScale, imgScale);
-            ctx.drawImage(userImg, 0, 0);
+            ctx.drawImage(userImg, -userImg.width / 2, -userImg.height / 2);
             ctx.restore();
         }
-
         if (templateImg.complete) {
             ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
         }
     }
 
+    function updateSlider() {
+        if (zoomSlider) zoomSlider.value = imgScale;
+    }
+
     function resetImageState() {
-        // Logika "Cover": Foto memenuhi canvas secara proporsional
-        const scaleW = canvas.width / userImg.width;
-        const scaleH = canvas.height / userImg.height;
-        imgScale = Math.max(scaleW, scaleH);
-        
-        // Posisikan di tengah
-        imgX = (canvas.width - userImg.width * imgScale) / 2;
-        imgY = (canvas.height - userImg.height * imgScale) / 2;
-        
-        if (zoomSlider) {
-            // Atur range slider dinamis berdasarkan ukuran foto
-            zoomSlider.min = (imgScale * 0.5).toFixed(2);
-            zoomSlider.max = (imgScale * 3).toFixed(2);
-            zoomSlider.step = "0.01";
-            zoomSlider.value = imgScale;
-        }
+        imgScale = Math.max(canvas.width / userImg.width, canvas.height / userImg.height);
+        imgX = canvas.width / 2;
+        imgY = canvas.height / 2;
+        updateSlider();
         draw();
     }
 
-    // --- ZOOM SLIDER FIX ---
+    // --- Event Listeners ---
     if (zoomSlider) {
         zoomSlider.addEventListener('input', (e) => {
-            const newScale = parseFloat(e.target.value);
-            
-            // Zoom dari titik tengah foto
-            const centerX = imgX + (userImg.width * imgScale) / 2;
-            const centerY = imgY + (userImg.height * imgScale) / 2;
-            
-            imgX = centerX - (userImg.width * newScale) / 2;
-            imgY = centerY - (userImg.height * newScale) / 2;
-            
-            imgScale = newScale;
+            imgScale = parseFloat(e.target.value);
             draw();
         });
     }
 
-    // --- MOUSE & WHEEL ---
-    canvas.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const delta = e.deltaY > 0 ? 0.95 : 1.05;
-        const newScale = imgScale * delta;
-        
-        // Update slider agar sinkron
-        if (zoomSlider) zoomSlider.value = newScale;
-        
-        imgScale = newScale;
-        draw();
-    }, { passive: false });
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetImageState);
+    }
 
-    // --- TOUCH (MOBILE PINCH RESIZE) ---
-    function getDist(t1, t2) { return Math.hypot(t1.pageX - t2.pageX, t1.pageY - t2.pageY); }
-
-    canvas.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 2) {
-            e.preventDefault();
-            const currentDist = getDist(e.touches[0], e.touches[1]);
-            
-            if (lastPinchDist > 0) {
-                const delta = currentDist / lastPinchDist;
-                imgScale *= delta;
-                if (zoomSlider) zoomSlider.value = imgScale;
-            }
-            lastPinchDist = currentDist;
-            draw();
-        }
-    }, { passive: false });
-
-    // --- UPLOAD ---
     upload.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
         const reader = new FileReader();
         reader.onload = (ev) => {
-            userImg = new Image(); // Reset instance
+            userImg = new Image();
             userImg.onload = () => {
                 resetImageState();
                 downloadBtn.disabled = false;
@@ -126,6 +78,82 @@
         reader.readAsDataURL(file);
     });
 
-    // Event listener lainnya (mousedown, mousemove, dsb) tetap sama seperti sebelumnya...
-    // (Tambahkan kembali sisa kode mouse & download milikmu di sini)
+    // --- MOUSE & TOUCH ---
+    let startX, startY;
+
+    function handlePanStart(x, y) {
+        isDragging = true;
+        startX = x;
+        startY = y;
+    }
+
+    function handlePanMove(x, y) {
+        if (isDragging) {
+            imgX += x - startX;
+            imgY += y - startY;
+            startX = x;
+            startY = y;
+            draw();
+        }
+    }
+
+    function handlePanEnd() {
+        isDragging = false;
+    }
+
+    canvas.addEventListener('mousedown', (e) => handlePanStart(e.offsetX, e.offsetY));
+    canvas.addEventListener('mousemove', (e) => handlePanMove(e.offsetX, e.offsetY));
+    window.addEventListener('mouseup', handlePanEnd);
+    canvas.addEventListener('mouseleave', handlePanEnd);
+
+    canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+            handlePanStart(e.touches[0].pageX, e.touches[0].pageY);
+        } else if (e.touches.length === 2) {
+            lastPinchDist = getDist(e.touches[0], e.touches[1]);
+        }
+    }, { passive: true });
+
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 1) {
+            handlePanMove(e.touches[0].pageX, e.touches[0].pageY);
+        } else if (e.touches.length === 2) {
+            const currentDist = getDist(e.touches[0], e.touches[1]);
+            if (lastPinchDist > 0) {
+                const scaleFactor = currentDist / lastPinchDist;
+                const midpoint = getMidpoint(e.touches[0], e.touches[1]);
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = midpoint.x - rect.left;
+                const mouseY = midpoint.y - rect.top;
+
+                imgX = mouseX - (mouseX - imgX) * scaleFactor;
+                imgY = mouseY - (mouseY - imgY) * scaleFactor;
+                imgScale *= scaleFactor;
+                updateSlider();
+            }
+            lastPinchDist = currentDist;
+            draw();
+        }
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) lastPinchDist = 0;
+        if (e.touches.length < 1) handlePanEnd();
+    });
+
+    function getDist(t1, t2) { return Math.hypot(t1.pageX - t2.pageX, t1.pageY - t2.pageY); }
+    function getMidpoint(t1, t2) { return { x: (t1.pageX + t2.pageX) / 2, y: (t1.pageY + t2.pageY) / 2 }; }
+
+    // --- DOWNLOAD ---
+    downloadBtn.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.download = 'twibbon-ikapmawi.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        const fd = new FormData();
+        fd.append('event_id', canvas.getAttribute('data-event-id'));
+        fetch('/record_usage.php', { method: 'POST', body: fd });
+    });
 })();

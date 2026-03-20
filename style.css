@@ -1,36 +1,33 @@
 .zoom-control {
     margin-bottom: 20px;
+    text-align: left;
 }
 
 .zoom-control label {
     display: block;
     font-size: 12px;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     color: #666;
-}
-
-.zoom-slider-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-weight: 500;
 }
 
 #zoomSlider {
     width: 100%;
-    height: 30px;
+    height: 20px;
     cursor: pointer;
+    margin-bottom: 10px;
 }
 
 .btn-reset {
-    background: #f1c40f;
+    background: #e74c3c;
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 8px 12px;
+    padding: 8px 15px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
 }
 
-.btn-reset:hover { background: #f39c12; }
+.btn-reset:hover { background: #c0392b; }
