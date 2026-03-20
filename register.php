@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="text" name="nama" placeholder="Nama Lengkap Anda" required>
         <input type="text" name="hp" placeholder="No HP Anda" required>
         <!-- <input type="password" name="password" placeholder="Password" required> -->
-        <button type="submit" class="btn-primary">Buat Akun</button>
+        <button type="submit" class="btn-primary">Lanjut ke Twibbon</button>
     </form>
     <p class="footer-text">Sudah punya akun? <a href="login.php">Masuk</a></p>
 </div>
