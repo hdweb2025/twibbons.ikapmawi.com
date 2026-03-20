@@ -51,21 +51,22 @@
     }
 
     function resetImageState() {
-        // Area target kotak merah (Estimasi)
+        // 1. Area target sesuai ukuran frame template (separuh ukuran canvas)
         const targetX = 40; 
         const targetY = 220;
         const targetW = 570;
         const targetH = 570;
 
-        // Hitung scale agar foto menutupi area kotak merah (bukan seluruh canvas)
+        // 2. Hitung rasio scale agar default foto yang diupload seukuran frame target
         const scaleW = targetW / userImg.width;
         const scaleH = targetH / userImg.height;
+        
+        // Gunakan Math.max agar ukuran foto menutupi seluruh targetW x targetH (cover/tanpa celah)
         imgScale = Math.max(scaleW, scaleH);
         
-        // Posisikan foto tepat di tengah area kotak merah
-        // Menggunakan titik tengah karena di draw(), posisi dihitung dari titik pusat (-width/2)
-        imgX = targetX + targetW / 2;
-        imgY = targetY + targetH / 2;
+        // 3. Posisikan titik pusat foto persis di tengah frame target
+        imgX = targetX + (targetW / 2);
+        imgY = targetY + (targetH / 2);
         
         if (zoomSlider) {
             zoomSlider.min = (Math.min(scaleW, scaleH) * 0.1).toFixed(3);
