@@ -61,16 +61,16 @@
         const scaleW = targetW / userImg.width;
         const scaleH = targetH / userImg.height;
         
-        // Gunakan Math.max agar ukuran foto menutupi seluruh targetW x targetH (cover/tanpa celah)
-        imgScale = Math.max(scaleW, scaleH);
+        // Gunakan Math.min agar seluruh bagian foto pas di dalam area lubang (fit/tidak meluber kebesaran)
+        imgScale = Math.min(scaleW, scaleH);
         
         // 3. Posisikan titik pusat foto persis di tengah frame target
         imgX = targetX + (targetW / 2);
         imgY = targetY + (targetH / 2);
         
         if (zoomSlider) {
-            zoomSlider.min = (Math.min(scaleW, scaleH) * 0.1).toFixed(3);
-            zoomSlider.max = (imgScale * 5).toFixed(3);
+            zoomSlider.min = (imgScale * 0.1).toFixed(3); // Memungkinkan foto dikecilkan hingga 10% lagi jika perlu
+            zoomSlider.max = (Math.max(scaleW, scaleH) * 5).toFixed(3);
         }
         updateSlider();
         draw();
