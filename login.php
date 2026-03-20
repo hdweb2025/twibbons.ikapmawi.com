@@ -41,7 +41,7 @@ if (isset($_POST['login'])) {
 <body>
     <div class="container">
         <div class="header">
-            <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI">
+            <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI" style="margin-top: 25px;">
             <h2>Login Alumni</h2>
         </div>
         <form method="GET" action="login.php" style="display:none;">
