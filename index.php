@@ -64,8 +64,8 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
             <a href="/logout.php" style="display:block; margin-top:20px; text-align:center; color:red; font-size:12px;">Keluar</a>
         <?php else: // If user is not logged in, show login prompt ?>
             <div class="login-prompt">
-                <div class="prompt-icon">✨</div>
-                <h3 style="margin-bottom: 20px;">Gunakan Desain Eksklusif dari <b>ikapmawi.</b></h3>
+                <div class="prompt-icon" style="text-align: center;">✨</div>
+                <h3 style="margin-bottom: 20px; text-align: center;">Gunakan Desain Eksklusif dari <b>ikapmawi.</b></h3>
                 
                 <?php 
                     $current_slug = $event['slug'];
