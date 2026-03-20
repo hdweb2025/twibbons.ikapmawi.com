@@ -61,7 +61,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                 <h5 style="text-align: center; color: #555; margin-top: 10px;">Sebanyak <?php echo $total_usage; ?> Alumni MWI</h5>
                 <h5 style="text-align: center; color: #555; margin-top: 10px;">Sudah Berpartisipasi dengan Twibbon ini</h5>
             </div>
-            <a href="/logout.php" style="display:block; margin-top:20px; color:red; font-size:12px;">Keluar</a>
+            <a href="/logout.php" style="display:block; margin-top:20px; center; color:red; font-size:12px;">Keluar</a>
         <?php else: // If user is not logged in, show login prompt ?>
             <div class="login-prompt">
                 <p>
