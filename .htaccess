@@ -1,12 +1,19 @@
 RewriteEngine On
 RewriteBase /
 
-# Force trailing slash for slugs
-RewriteRule ^([a-zA-Z0-9-]+)$ $1/ [R=301,L]
+# 1. Jika file atau direktori FISIK ada, layani langsung
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
-# Allow access to existing files and directories
+# 2. Redirect /slug/ ke /slug.php agar konsisten
+RewriteRule ^([a-zA-Z0-9-]+)/$ $1.php [R=301,L]
+
+# 3. Rewrite /slug.php (yang tidak ada fisiknya) ke index.php?event_slug=slug
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9-]+)\.php$ index.php?event_slug=$1 [L,QSA]
 
-# Rewrite all other requests to index.php
-RewriteRule ^([a-zA-Z0-9-]+)/$ index.php?event_slug=$1 [L,QSA]
+# 4. Fallback: jika /slug tanpa .php, tambahkan .php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([a-zA-Z0-9-]+)$ $1.php [L,R=301]
+

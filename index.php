@@ -41,12 +41,12 @@ if (isset($_SESSION['user'])) {
                     <p>Belum ada event tersedia.</p>
                 <?php else: ?>
                     <?php while($row = mysqli_fetch_assoc($events)):
-                           $slug = !empty($row['slug']) ? '/' . $row['slug'] . '/' : '/index.php?event_slug=' . $row['slug'];
-                       ?>
-                           <a href="<?php echo $slug; ?>" class="btn-primary" style="text-decoration: none;">
-                               <?php echo $row['name']; ?>
-                           </a>
-                       <?php endwhile; ?>
+                            $slug = !empty($row['slug']) ? '/' . $row['slug'] . '.php' : '/index.php?event_slug=' . $row['slug'];
+                        ?>
+                            <a href="<?php echo $slug; ?>" class="btn-primary" style="text-decoration: none;">
+                                <?php echo $row['name']; ?>
+                            </a>
+                        <?php endwhile; ?>
                 <?php endif; ?>
             </div>
         <?php else: ?>

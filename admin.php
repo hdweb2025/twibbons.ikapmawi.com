@@ -106,7 +106,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                     <tr>
                         <td style="padding:10px; border:1px solid #ddd;"><?php echo $row['name']; ?></td>
                         <td style="padding:10px; border:1px solid #ddd;">
-                            <a href="/<?php echo $row['slug']; ?>/" target="_blank"><?php echo $row['slug']; ?></a>
+                            <a href="/<?php echo $row['slug']; ?>.php" target="_blank"><?php echo $row['slug']; ?>.php</a>
                         </td>
                         <td style="padding:10px; border:1px solid #ddd; font-size: 10px;">
                             <?php 
