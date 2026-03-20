@@ -52,7 +52,7 @@ if (isset($_POST['login'])) {
         <form method="POST" action="login.php<?php echo isset($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : ''; ?>">
             <input type="text" name="hp" placeholder="Nomor HP" required><br>
             <!-- <input type="password" name="password" placeholder="Password" required><br> -->
-            <button type="submit" name="login" class="btn-warning">Masuk</button>
+            <button type="submit" name="login" class="btn-primary">Masuk</button>
         </form>
     </div>
 </body>
