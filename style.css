@@ -256,3 +256,71 @@ input:focus {
 .mt-10 { margin-top: 10px; }
 .text-center { text-align: center; }
 .text-red { color: var(--danger-color); }
+
+/* Styling khusus untuk kotak ajakan Login/Daftar */
+.login-prompt {
+    text-align: center;
+    background: linear-gradient(145deg, #ffffff, #f9fbf9);
+    padding: 30px 20px;
+    border-radius: 15px;
+    border: 1px solid #e0eee0; /* Hijau sangat muda */
+    box-shadow: 0 10px 30px rgba(26, 92, 46, 0.08);
+    margin: 20px 0;
+}
+
+.prompt-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.login-prompt h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.login-prompt p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.prompt-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+/* Garis pembatas estetik */
+.divider {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #ccc;
+    font-size: 12px;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #eee;
+}
+
+.divider span {
+    padding: 0 10px;
+}
+
+.btn-link {
+    font-size: 14px;
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
