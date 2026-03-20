@@ -38,7 +38,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
             <!-- File upload control placed before the template preview -->
             <div class="controls">
                 <input type="file" id="upload" accept="image/*" style="display:none">
-                <label for="upload" class="btn-primary" style="display:block; margin-bottom:10px;">Pilih Foto</label>
+                <label for="upload" class="btn-primary" style="display:block; margin-bottom:10px;">Upload Foto</label>
             </div>
 
             <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Gunakan mouse wheel untuk zoom, drag untuk geser foto.</p>
