@@ -78,4 +78,10 @@ $check_admin_exist = mysqli_query($conn, "SELECT id FROM users WHERE nomor_hp = 
 if (mysqli_num_rows($check_admin_exist) == 0) {
     mysqli_query($conn, "INSERT INTO users (nama_lengkap, tahun_alumni, nomor_hp, password, is_admin) VALUES ('Admin', 2000, '$admin_hp', '$hashed_pass', 1)");
 }
+
+// Auto-add Kartini 2026 event if not exists
+$kartini_check = mysqli_query($conn, "SELECT id FROM events WHERE slug = 'kartini-2026'");
+if (mysqli_num_rows($kartini_check) == 0) {
+    mysqli_query($conn, "INSERT INTO events (name, slug, template) VALUES ('Kartini 2026', 'kartini-2026', 'uploads/templates/kartini-2026.png')");
+}
 ?>
