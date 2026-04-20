@@ -80,7 +80,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                 ?>
 
                 <div class="prompt-actions">
-                    <a href="<?php echo $register_url; ?>" class="btn-primary">Buat Twibbon</a>
+                    <a href="<?php echo $register_url; ?>" class="btn-primary">Buat Sekarang</a>
                     <div class="divider"><span>atau</span></div>
                     <a href="<?php echo $login_url; ?>" class="btn-link">Sudah punya akun? <b>Masuk</b></a>
                 </div>
