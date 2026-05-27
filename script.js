@@ -52,10 +52,10 @@
 
     function resetImageState() {
         // 1. Area target spesifik sesuai letak lubang bingkai pada template
-        const targetX = 40; 
-        const targetY = 220;
-        const targetW = 570;
-        const targetH = 570;
+        const targetX = parseInt(canvas.getAttribute('data-hole-x')) || 0;
+        const targetY = parseInt(canvas.getAttribute('data-hole-y')) || 0;
+        const targetW = parseInt(canvas.getAttribute('data-hole-w')) || 1080;
+        const targetH = parseInt(canvas.getAttribute('data-hole-h')) || 1080;
 
         // 2. Hitung rasio scale agar default foto yang diupload seukuran frame target
         const scaleW = targetW / userImg.width;

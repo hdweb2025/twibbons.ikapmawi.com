@@ -27,9 +27,10 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 <div class="container">
     <?php if (!isset($_SESSION['user'])): ?>
         <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI" class="header">
+    <?php else: ?>
+        <p style="text-align:center;">Assalamualaikum... <br><b><?php echo $_SESSION['user']; ?></b> (Alumni <?php echo $_SESSION['tahun']; ?>)</p>
     <?php endif; ?>
-    <p style="text-align:center;">Assalamualaikum... <br><b><?php echo $_SESSION['user']; ?></b> (Alumni <?php echo $_SESSION['tahun']; ?>)</p>
-    </div>
+</div>
 
     <?php if ($event): // If a specific event is being viewed ?>
         <?php if (isset($_SESSION['user'])): // If user is logged in, show editor ?>
@@ -43,7 +44,14 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 
             <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Gunakan mouse wheel untuk zoom, drag untuk geser foto.</p>
             <div class="canvas-wrapper">
-            <canvas id="mainCanvas" width="1080" height="1080" data-template="/<?php echo $event['template']; ?>" data-event-id="<?php echo $event['id']; ?>"></canvas>
+            <canvas id="mainCanvas" width="1080" height="1080" 
+                data-template="/<?php echo $event['template']; ?>" 
+                data-event-id="<?php echo $event['id']; ?>"
+                data-hole-x="<?php echo $event['hole_x']; ?>"
+                data-hole-y="<?php echo $event['hole_y']; ?>"
+                data-hole-w="<?php echo $event['hole_w']; ?>"
+                data-hole-h="<?php echo $event['hole_h']; ?>">
+            </canvas>
         </div>
 
         <div class="zoom-control">

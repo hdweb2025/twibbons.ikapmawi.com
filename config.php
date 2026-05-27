@@ -25,6 +25,12 @@ if (mysqli_num_rows($check_slug_column) == 0) {
     mysqli_query($conn, "ALTER TABLE events ADD COLUMN slug VARCHAR(255) UNIQUE NOT NULL AFTER name");
 }
 
+// Check if hole columns exist, if not add them
+$check_hole_columns = mysqli_query($conn, "SHOW COLUMNS FROM events LIKE 'hole_x'");
+if (mysqli_num_rows($check_hole_columns) == 0) {
+    mysqli_query($conn, "ALTER TABLE events ADD COLUMN hole_x INT DEFAULT 0, ADD COLUMN hole_y INT DEFAULT 0, ADD COLUMN hole_w INT DEFAULT 1080, ADD COLUMN hole_h INT DEFAULT 1080");
+}
+
 // Populate empty slugs for existing events
 $empty_slugs = mysqli_query($conn, "SELECT id, name, template FROM events");
 while ($row = mysqli_fetch_assoc($empty_slugs)) {
@@ -82,6 +88,15 @@ if (mysqli_num_rows($check_admin_exist) == 0) {
 // Auto-add Kartini 2026 event if not exists
 $kartini_check = mysqli_query($conn, "SELECT id FROM events WHERE slug = 'kartini-2026'");
 if (mysqli_num_rows($kartini_check) == 0) {
-    mysqli_query($conn, "INSERT INTO events (name, slug, template) VALUES ('Kartini 2026', 'kartini-2026', 'uploads/templates/kartini-2026.png')");
+    mysqli_query($conn, "INSERT INTO events (name, slug, template, hole_x, hole_y, hole_w, hole_h) VALUES ('Kartini 2026', 'kartini-2026', 'uploads/templates/kartini-2026.png', 40, 220, 570, 570)");
+} else {
+    // Ensure coordinates are set for existing Kartini event
+    mysqli_query($conn, "UPDATE events SET hole_x = 40, hole_y = 220, hole_w = 570, hole_h = 570 WHERE slug = 'kartini-2026' AND hole_w = 1080");
+}
+
+// Auto-add Idul Adha 2026 event if not exists
+$idul_adha_check = mysqli_query($conn, "SELECT id FROM events WHERE slug = 'idul-adha-2026'");
+if (mysqli_num_rows($idul_adha_check) == 0) {
+    mysqli_query($conn, "INSERT INTO events (name, slug, template, hole_x, hole_y, hole_w, hole_h) VALUES ('Selamat Idul Adha 1447H / 2026M', 'idul-adha-2026', 'uploads/templates/idul-adha-2026.png', 0, 0, 1080, 1080)");
 }
 ?>

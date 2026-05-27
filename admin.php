@@ -25,7 +25,7 @@ $result = mysqli_query($conn, $query);
 <body>
 <div class="container" style="max-width: 1000px;">
     <div class="header">
-        <img src="/assets/ikapmawi-logo.png" alt="Logo IKAPMAWI">
+        <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI" style="max-width: 200px; margin-bottom: 20px;">
         <h2>Halaman Admin</h2>
         <p style="color: #666;">Daftar Alumni yang Telah Mengisi Form</p>
     </div>
