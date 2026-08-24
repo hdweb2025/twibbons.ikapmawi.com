@@ -8,15 +8,19 @@ if (!isset($_SESSION['user']) || !$_SESSION['is_admin']) {
     exit();
 }
 
-$event_id = isset($_GET['id']) ? $_GET['id'] : null;
+$event_id = isset($_GET['id']) ? intval($_GET['id']) : null;
 if (!$event_id) {
     header("Location: /admin.php");
     exit();
 }
 
 // Fetch current event data
-$res = mysqli_query($conn, "SELECT * FROM events WHERE id = $event_id");
+$stmt = mysqli_prepare($conn, "SELECT * FROM events WHERE id = ?");
+mysqli_stmt_bind_param($stmt, "i", $event_id);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
 $event = mysqli_fetch_assoc($res);
+mysqli_stmt_close($stmt);
 
 if (!$event) {
     echo "Event tidak ditemukan.";
@@ -37,11 +41,19 @@ if (isset($_POST['update_event'])) {
                 unlink($event['template']);
             }
             // Update database with new template path
-            mysqli_query($conn, "UPDATE events SET template = '$target_file' WHERE id = $event_id");
+            $stmt_update = mysqli_prepare($conn, "UPDATE events SET template = ? WHERE id = ?");
+            mysqli_stmt_bind_param($stmt_update, "si", $target_file, $event_id);
+            mysqli_stmt_execute($stmt_update);
+            mysqli_stmt_close($stmt_update);
             $success = "Template berhasil diperbarui!";
+            
             // Refresh event data
-            $res = mysqli_query($conn, "SELECT * FROM events WHERE id = $event_id");
+            $stmt_refresh = mysqli_prepare($conn, "SELECT * FROM events WHERE id = ?");
+            mysqli_stmt_bind_param($stmt_refresh, "i", $event_id);
+            mysqli_stmt_execute($stmt_refresh);
+            $res = mysqli_stmt_get_result($stmt_refresh);
             $event = mysqli_fetch_assoc($res);
+            mysqli_stmt_close($stmt_refresh);
         } else {
             $error = "Gagal mengunggah template baru.";
         }

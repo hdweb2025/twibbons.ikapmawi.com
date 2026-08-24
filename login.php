@@ -6,8 +6,12 @@ if (isset($_POST['login'])) {
     $hp = $_POST['hp'];
     // $pass = $_POST['password']; // Password dinonaktifkan sementara
 
-    $result = mysqli_query($conn, "SELECT * FROM users WHERE nomor_hp = '$hp'");
+    $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE nomor_hp = ?");
+    mysqli_stmt_bind_param($stmt, "s", $hp);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     $user = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
 
     // Login hanya dengan mencocokkan Nomor HP saja
     if ($user) {

@@ -1,22 +1,31 @@
 <?php
 include 'config.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
-    $tahun = mysqli_real_escape_string($conn, $_POST['tahun']);
-    $hp = mysqli_real_escape_string($conn, $_POST['hp']);
+    $nama = $_POST['nama'];
+    $tahun = $_POST['tahun'];
+    $hp = $_POST['hp'];
     // Password dinonaktifkan sementara, kita beri nilai default agar tidak error di database
     $pass = password_hash('default123', PASSWORD_DEFAULT);
 
-    $check = mysqli_query($conn, "SELECT id FROM users WHERE nomor_hp = '$hp'");
-    if (mysqli_num_rows($check) > 0) {
+    $stmt_check = mysqli_prepare($conn, "SELECT id FROM users WHERE nomor_hp = ?");
+    mysqli_stmt_bind_param($stmt_check, "s", $hp);
+    mysqli_stmt_execute($stmt_check);
+    mysqli_stmt_store_result($stmt_check);
+    
+    if (mysqli_stmt_num_rows($stmt_check) > 0) {
         $error = "Nomor HP sudah terdaftar!";
     } else {
-        $sql = "INSERT INTO users (nama_lengkap, tahun_alumni, nomor_hp, password) VALUES ('$nama', '$tahun', '$hp', '$pass')";
-        if (mysqli_query($conn, $sql)) {
+        $stmt_insert = mysqli_prepare($conn, "INSERT INTO users (nama_lengkap, tahun_alumni, nomor_hp, password) VALUES (?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt_insert, "ssss", $nama, $tahun, $hp, $pass);
+        if (mysqli_stmt_execute($stmt_insert)) {
+            mysqli_stmt_close($stmt_insert);
+            mysqli_stmt_close($stmt_check);
             header("Location: login.php?msg=success");
             exit();
         }
+        mysqli_stmt_close($stmt_insert);
     }
+    mysqli_stmt_close($stmt_check);
 }
 ?>
 <!DOCTYPE html>

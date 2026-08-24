@@ -8,11 +8,13 @@ if (!isset($_SESSION['user_id']) || !isset($_POST['event_id']) || $_SESSION['is_
 }
 
 $user_id = $_SESSION['user_id'];
-$event_id = mysqli_real_escape_string($conn, $_POST['event_id']);
+$event_id = $_POST['event_id'];
 
 // Insert or ignore if already recorded
-$query = "INSERT IGNORE INTO event_usage (user_id, event_id) VALUES ('$user_id', '$event_id')";
-mysqli_query($conn, $query);
+$stmt = mysqli_prepare($conn, "INSERT IGNORE INTO event_usage (user_id, event_id) VALUES (?, ?)");
+mysqli_stmt_bind_param($stmt, "ii", $user_id, $event_id);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_close($stmt);
 
 echo json_encode(['status' => 'success']);
 ?>
