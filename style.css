@@ -785,15 +785,67 @@ input:focus, select:focus {
 }
 
 /* ==========================================================================
-   Footer
+   Footer & Medsos
    ========================================================================== */
 .site-footer {
     text-align: center;
     margin-top: 30px;
-    padding-top: 15px;
+    padding-top: 18px;
     font-size: 12.5px;
     color: var(--text-muted);
     width: 100%;
+    border-top: 1px solid var(--border-color);
+}
+
+.social-footer-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #475569;
+    transition: all 0.25s ease;
+    text-decoration: none !important;
+}
+
+.social-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.social-btn.social-fb:hover {
+    background: #1877f2;
+    color: #ffffff;
+}
+
+.social-btn.social-ig:hover {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+    color: #ffffff;
+}
+
+.social-btn.social-yt:hover {
+    background: #ff0000;
+    color: #ffffff;
+}
+
+.social-btn.social-tt:hover {
+    background: #000000;
+    color: #ffffff;
+}
+
+.social-btn.social-wa:hover {
+    background: #25d366;
+    color: #ffffff;
 }
 
 .site-footer a {

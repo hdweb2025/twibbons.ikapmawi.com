@@ -1,19 +1,26 @@
 RewriteEngine On
 RewriteBase /
 
-# 1. Jika file atau direktori FISIK ada, layani langsung
+# 1. Admin Routing (Clean URLs)
+RewriteRule ^admin/login/?$ admin/login.php [L,QSA]
+RewriteRule ^admin/dashboard/?$ admin/dashboard.php [L,QSA]
+RewriteRule ^admin/logout/?$ admin/logout.php [L,QSA]
+RewriteRule ^admin/?$ admin/dashboard.php [L,QSA]
+
+# 2. Jika file atau direktori FISIK ada, layani langsung
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# 2. Redirect /slug/ ke /slug.php agar konsisten
+# 3. Redirect /slug/ ke /slug.php agar konsisten
 RewriteRule ^([a-zA-Z0-9-]+)/$ $1.php [R=301,L]
 
-# 3. Rewrite /slug.php (yang tidak ada fisiknya) ke index.php?event_slug=slug
+# 4. Rewrite /slug.php (yang tidak ada fisiknya) ke index.php?event_slug=slug
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([a-zA-Z0-9-]+)\.php$ index.php?event_slug=$1 [L,QSA]
 
-# 4. Fallback: jika /slug tanpa .php, tambahkan .php
+# 5. Fallback: jika /slug tanpa .php, tambahkan .php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([a-zA-Z0-9-]+)$ $1.php [L,R=301]
+
 

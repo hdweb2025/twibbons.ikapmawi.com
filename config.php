@@ -109,13 +109,39 @@ if (mysqli_num_rows($maulid_check) == 0) {
 // Create settings table for dynamic configuration
 mysqli_query($conn, "CREATE TABLE IF NOT EXISTS settings (
     setting_key VARCHAR(50) PRIMARY KEY,
-    setting_value VARCHAR(255) NOT NULL
+    setting_value TEXT NOT NULL
 )");
+
+// Check setting_value column type, alter to TEXT if it was VARCHAR
+$check_setting_col = mysqli_query($conn, "SHOW COLUMNS FROM settings LIKE 'setting_value'");
+if ($row_col = mysqli_fetch_assoc($check_setting_col)) {
+    if (strpos(strtolower($row_col['Type']), 'varchar') !== false) {
+        mysqli_query($conn, "ALTER TABLE settings MODIFY COLUMN setting_value TEXT NOT NULL");
+    }
+}
 
 // Insert default require_registration setting
 $setting_check = mysqli_query($conn, "SELECT setting_value FROM settings WHERE setting_key = 'require_registration'");
 if (mysqli_num_rows($setting_check) == 0) {
     mysqli_query($conn, "INSERT INTO settings (setting_key, setting_value) VALUES ('require_registration', '0')"); // 0 = nonaktifkan (quick join)
+}
+
+// Insert default social media settings (empty by default)
+$default_socials = [
+    'social_facebook' => '',
+    'social_instagram' => '',
+    'social_youtube' => '',
+    'social_tiktok' => '',
+    'social_whatsapp' => ''
+];
+foreach ($default_socials as $soc_key => $soc_val) {
+    $check_soc = mysqli_query($conn, "SELECT setting_value FROM settings WHERE setting_key = '$soc_key'");
+    if (mysqli_num_rows($check_soc) == 0) {
+        $stmt_soc = mysqli_prepare($conn, "INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)");
+        mysqli_stmt_bind_param($stmt_soc, "ss", $soc_key, $soc_val);
+        mysqli_stmt_execute($stmt_soc);
+        mysqli_stmt_close($stmt_soc);
+    }
 }
 
 // Helper function to get setting
@@ -128,5 +154,14 @@ function get_setting($conn, $key, $default = '') {
         return $row['setting_value'];
     }
     return $default;
+}
+
+// Helper function to set setting
+function set_setting($conn, $key, $value) {
+    $stmt = mysqli_prepare($conn, "INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?");
+    mysqli_stmt_bind_param($stmt, "sss", $key, $value, $value);
+    $result = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+    return $result;
 }
 ?>

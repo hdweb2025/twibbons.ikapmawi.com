@@ -25,7 +25,7 @@ if (isset($_POST['login'])) {
         if (isset($_GET['redirect'])) {
             header("Location: /" . $_GET['redirect']);
         } elseif ($user['is_admin']) {
-            header("Location: /admin.php");
+            header("Location: /admin/dashboard");
         } else {
             header("Location: /");
         }
@@ -60,8 +60,9 @@ if (isset($_POST['login'])) {
             <input type="text" name="hp" placeholder="Nomor HP" required>
             <!-- <input type="password" name="password" placeholder="Password" required> -->
             <button type="submit" name="login" class="btn-primary">Masuk</button>
-            <div style="text-align: center; margin-top: 15px;">
+            <div style="text-align: center; margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
                 <a href="/register.php<?php echo isset($_GET['redirect']) ? '?redirect=' . urlencode($_GET['redirect']) : ''; ?>" class="btn-link">Belum punya akun? Daftar</a>
+                <a href="/admin/login" style="font-size: 12px; color: var(--text-muted); text-decoration: none;">Masuk sebagai Administrator →</a>
             </div>
         </form>
     </div>
