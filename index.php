@@ -11,6 +11,33 @@ if ($event_slug) {
     $event = mysqli_fetch_assoc($res);
 }
 
+// Check require_registration setting
+$require_registration = get_setting($conn, 'require_registration', '0') === '1';
+
+// Handle quick join submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['quick_join'])) {
+    $nama = $_POST['nama'];
+    $tahun = $_POST['tahun'];
+    $hp = 'guest_' . time() . rand(100, 999);
+    $pass = '';
+
+    $stmt_insert = mysqli_prepare($conn, "INSERT INTO users (nama_lengkap, tahun_alumni, nomor_hp, password) VALUES (?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt_insert, "ssss", $nama, $tahun, $hp, $pass);
+    mysqli_stmt_execute($stmt_insert);
+    $user_id = mysqli_insert_id($conn);
+    mysqli_stmt_close($stmt_insert);
+
+    $_SESSION['user_id'] = $user_id;
+    $_SESSION['user'] = $nama;
+    $_SESSION['tahun'] = $tahun;
+    $_SESSION['hp'] = $hp;
+    $_SESSION['is_admin'] = 0;
+    
+    // Redirect to prevent form resubmission
+    header("Location: /" . $event['slug'] . ".php");
+    exit();
+}
+
 // Fetch all events for the gallery view for everyone
 $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 
@@ -81,17 +108,29 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                 <div class="prompt-icon" style="text-align: center;">✨</div>
                 <h3 style="margin-bottom: 20px; text-align: center;">Gunakan Desain Eksklusif dari <b>ikapmawi.</b></h3>
                 
-                <?php 
-                    $current_slug = $event['slug'];
-                    $login_url = "/login.php?redirect=" . urlencode($current_slug);
-                    $register_url = "/register.php?redirect=" . urlencode($current_slug);
-                ?>
-
-                <div class="prompt-actions">
-                    <a href="<?php echo $register_url; ?>" class="btn-primary">Buat Sekarang</a>
-                    <div class="divider"><span>atau</span></div>
-                    <a href="<?php echo $login_url; ?>" class="btn-link">Sudah punya akun? <b>Masuk</b></a>
-                </div>
+                <?php if ($require_registration): ?>
+                    <?php 
+                        $current_slug = $event['slug'];
+                        $login_url = "/login.php?redirect=" . urlencode($current_slug);
+                        $register_url = "/register.php?redirect=" . urlencode($current_slug);
+                    ?>
+                    <div class="prompt-actions">
+                        <a href="<?php echo $register_url; ?>" class="btn-primary">Buat Sekarang</a>
+                        <div class="divider"><span>atau</span></div>
+                        <a href="<?php echo $login_url; ?>" class="btn-link">Sudah punya akun? <b>Masuk</b></a>
+                    </div>
+                <?php else: ?>
+                    <form method="POST" class="quick-join-form" style="margin-top: 20px;">
+                        <input type="text" name="nama" placeholder="Nama Lengkap Anda" required style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box;">
+                        <select name="tahun" required style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box;">
+                            <option value="" disabled selected>Alumni Tahun</option>
+                            <?php for ($i = date('Y')+1; $i >= 1950; $i--): ?>
+                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                            <?php endfor; ?>
+                        </select>
+                        <button type="submit" name="quick_join" class="btn-primary" style="width: 100%;">Lanjut ke Twibbon</button>
+                    </form>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
     <?php else: // If no specific event, show the gallery ?>

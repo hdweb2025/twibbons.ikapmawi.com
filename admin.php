@@ -12,6 +12,17 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['
 // Ambil data semua user/alumni yang sudah mendaftar (diurutkan dari yang paling baru)
 $query = "SELECT nama_lengkap, tahun_alumni, nomor_hp, created_at FROM users ORDER BY created_at DESC";
 $result = mysqli_query($conn, $query);
+
+// Handle pengaturan mode registrasi
+if (isset($_POST['toggle_registration'])) {
+    $new_val = $_POST['require_registration'] === '1' ? '1' : '0';
+    $stmt = mysqli_prepare($conn, "UPDATE settings SET setting_value = ? WHERE setting_key = 'require_registration'");
+    mysqli_stmt_bind_param($stmt, "s", $new_val);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+$require_registration = get_setting($conn, 'require_registration', '0') === '1';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -28,6 +39,20 @@ $result = mysqli_query($conn, $query);
         <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI" style="max-width: 200px; margin-bottom: 20px;">
         <h2>Halaman Admin</h2>
         <p style="color: #666;">Daftar Alumni yang Telah Mengisi Form</p>
+    </div>
+
+    <!-- Mode Pengaturan -->
+    <div style="background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 style="margin-top:0;">Pengaturan Sistem</h3>
+        <form method="POST" style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-weight: bold;">Mode Pendaftaran:</label>
+            <select name="require_registration" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
+                <option value="1" <?php echo $require_registration ? 'selected' : ''; ?>>Aktif (Harus Login/Daftar dengan No HP)</option>
+                <option value="0" <?php echo !$require_registration ? 'selected' : ''; ?>>Nonaktif (Quick Join - Cukup Nama & Tahun)</option>
+            </select>
+            <button type="submit" name="toggle_registration" class="btn-primary" style="padding: 5px 15px; width: auto;">Simpan</button>
+        </form>
+        <p style="font-size: 12px; color: #666; margin-bottom:0; margin-top:5px;">Jika dinonaktifkan, alumni tidak perlu mendaftar menggunakan nomor HP untuk menggunakan Twibbon.</p>
     </div>
     
     <div style="overflow-x: auto;">

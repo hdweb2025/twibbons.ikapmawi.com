@@ -99,4 +99,28 @@ $idul_adha_check = mysqli_query($conn, "SELECT id FROM events WHERE slug = 'idul
 if (mysqli_num_rows($idul_adha_check) == 0) {
     mysqli_query($conn, "INSERT INTO events (name, slug, template, hole_x, hole_y, hole_w, hole_h) VALUES ('Selamat Idul Adha 1447H / 2026M', 'idul-adha-2026', 'uploads/templates/idul-adha-2026.png', 0, 0, 1080, 1080)");
 }
+
+// Create settings table for dynamic configuration
+mysqli_query($conn, "CREATE TABLE IF NOT EXISTS settings (
+    setting_key VARCHAR(50) PRIMARY KEY,
+    setting_value VARCHAR(255) NOT NULL
+)");
+
+// Insert default require_registration setting
+$setting_check = mysqli_query($conn, "SELECT setting_value FROM settings WHERE setting_key = 'require_registration'");
+if (mysqli_num_rows($setting_check) == 0) {
+    mysqli_query($conn, "INSERT INTO settings (setting_key, setting_value) VALUES ('require_registration', '0')"); // 0 = nonaktifkan (quick join)
+}
+
+// Helper function to get setting
+function get_setting($conn, $key, $default = '') {
+    $stmt = mysqli_prepare($conn, "SELECT setting_value FROM settings WHERE setting_key = ?");
+    mysqli_stmt_bind_param($stmt, "s", $key);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    if ($row = mysqli_fetch_assoc($res)) {
+        return $row['setting_value'];
+    }
+    return $default;
+}
 ?>
