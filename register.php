@@ -47,18 +47,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
     <?php if(isset($error)) echo "<p style='color:#e74c3c; background:#fadbd8; padding:12px; border-radius:8px; text-align:center; font-size:14px; margin: 0 auto 20px auto; max-width: 400px;'>$error</p>"; ?>
     <form method="POST">
-        <select name="tahun" required>
-            <option value="" disabled selected>Alumni Tahun</option>
-            <?php for ($i = 2027; $i >= 1950; $i--): ?>
-                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-            <?php endfor; ?>
-        </select>
+        <!-- Modern Searchable Alumni Year Dropdown -->
+        <div class="custom-select-wrapper">
+            <input type="hidden" name="tahun" id="tahunRegister" required>
+            <div class="custom-select-trigger placeholder" tabindex="0" role="combobox" aria-expanded="false">
+                <span class="custom-select-text">Alumni Tahun Berapa?</span>
+                <svg class="custom-select-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+            <div class="custom-select-dropdown">
+                <div class="custom-select-search-box">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" class="custom-select-search-input" placeholder="Ketik tahun (contoh: 2018)..." autocomplete="off">
+                </div>
+                <div class="custom-select-options">
+                    <?php 
+                    $current_decade = null;
+                    for ($i = 2027; $i >= 1950; $i--): 
+                        $decade_label = 'Tahun ' . (floor($i / 10) * 10) . '-an';
+                        if ($current_decade !== $decade_label):
+                            $current_decade = $decade_label;
+                    ?>
+                        <div class="custom-select-decade"><?php echo $decade_label; ?></div>
+                    <?php endif; ?>
+                        <div class="custom-select-option" data-value="<?php echo $i; ?>" data-label="<?php echo $i; ?>">
+                            <span>Tahun <?php echo $i; ?></span>
+                            <span style="font-size: 11px; color: var(--text-muted);">Alumni</span>
+                        </div>
+                    <?php endfor; ?>
+                    <div class="custom-select-no-results" style="display: none;">Tahun tidak ditemukan</div>
+                </div>
+            </div>
+        </div>
+
         <input type="text" name="nama" placeholder="Nama Lengkap Anda" required>
         <input type="text" name="hp" placeholder="No HP Anda" required>
         <!-- <input type="password" name="password" placeholder="Password" required> -->
         <button type="submit" class="btn-primary">Lanjut ke Twibbon</button>
     </form>
-    <p class="footer-text">Sudah punya akun? <a href="login.php">Masuk</a></p>
+    <p class="site-footer" style="margin-top: 15px;">Sudah punya akun? <a href="login.php" class="btn-link"><b>Masuk</b></a></p>
 </div>
+
+<script src="/dropdown.js"></script>
 </body>
 </html>

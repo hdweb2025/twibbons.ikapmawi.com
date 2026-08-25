@@ -160,7 +160,6 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 
         <?php else: // If user is not logged in, show login/join prompt ?>
             <div class="login-prompt">
-                <div class="prompt-icon">✨</div>
                 <h2 style="color: var(--primary-color); margin-bottom: 8px;"><?php echo htmlspecialchars($event['name']); ?></h2>
                 <p style="color: var(--text-muted); font-size: 14.5px; max-width: 460px; margin: 0 auto 20px auto;">
                     Gunakan bingkai Twibbon eksklusif dari <b>IKAPMAWI</b> untuk merayakan momen spesial bersama rekan alumni.
@@ -180,12 +179,39 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                 <?php else: ?>
                     <form method="POST" class="quick-join-form" style="max-width: 380px; margin: 20px auto 0 auto;">
                         <input type="text" name="nama" placeholder="Nama Lengkap Anda" required>
-                        <select name="tahun" required>
-                            <option value="" disabled selected>Alumni Tahun Berapa?</option>
-                            <?php for ($i = date('Y')+1; $i >= 1950; $i--): ?>
-                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                            <?php endfor; ?>
-                        </select>
+                        
+                        <!-- Modern Searchable Alumni Year Dropdown -->
+                        <div class="custom-select-wrapper">
+                            <input type="hidden" name="tahun" id="tahunQuickJoin" required>
+                            <div class="custom-select-trigger placeholder" tabindex="0" role="combobox" aria-expanded="false">
+                                <span class="custom-select-text">Alumni Tahun Berapa?</span>
+                                <svg class="custom-select-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                            <div class="custom-select-dropdown">
+                                <div class="custom-select-search-box">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                    <input type="text" class="custom-select-search-input" placeholder="Ketik tahun (contoh: 2018)..." autocomplete="off">
+                                </div>
+                                <div class="custom-select-options">
+                                    <?php 
+                                    $current_decade = null;
+                                    for ($i = date('Y')+1; $i >= 1950; $i--): 
+                                        $decade_label = 'Tahun ' . (floor($i / 10) * 10) . '-an';
+                                        if ($current_decade !== $decade_label):
+                                            $current_decade = $decade_label;
+                                    ?>
+                                        <div class="custom-select-decade"><?php echo $decade_label; ?></div>
+                                    <?php endif; ?>
+                                        <div class="custom-select-option" data-value="<?php echo $i; ?>" data-label="<?php echo $i; ?>">
+                                            <span>Tahun <?php echo $i; ?></span>
+                                            <span style="font-size: 11px; color: var(--text-muted);">Alumni</span>
+                                        </div>
+                                    <?php endfor; ?>
+                                    <div class="custom-select-no-results" style="display: none;">Tahun tidak ditemukan</div>
+                                </div>
+                            </div>
+                        </div>
+
                         <button type="submit" name="quick_join" class="btn-primary">Lanjut ke Twibbon →</button>
                     </form>
                 <?php endif; ?>
@@ -227,6 +253,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
     </footer>
 </div>
 
+<script src="/dropdown.js"></script>
 <?php if (isset($_SESSION['user']) && $event): ?>
 <script src="/script.js"></script>
 <?php endif; ?>

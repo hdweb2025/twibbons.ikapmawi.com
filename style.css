@@ -375,7 +375,7 @@ body {
 }
 
 /* ==========================================================================
-   Form Styling (Login, Register, Quick Join)
+   Form Styling & Modern Searchable Dropdown
    ========================================================================== */
 form {
     display: flex;
@@ -405,6 +405,163 @@ input:focus, select:focus {
     border-color: var(--primary-color);
     outline: none;
     box-shadow: 0 0 0 3.5px rgba(26, 92, 46, 0.12);
+}
+
+/* --- Modern Custom Searchable Dropdown --- */
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+    user-select: none;
+    font-family: inherit;
+}
+
+.custom-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 13px 16px;
+    background: #ffffff;
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 15px;
+    color: var(--text-dark);
+    cursor: pointer;
+    min-height: 48px;
+    transition: all 0.2s ease;
+}
+
+.custom-select-trigger:focus,
+.custom-select-wrapper.open .custom-select-trigger {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3.5px rgba(26, 92, 46, 0.12);
+}
+
+.custom-select-trigger.placeholder .custom-select-text {
+    color: #94a3b8;
+}
+
+.custom-select-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.custom-select-arrow {
+    transition: transform 0.25s ease;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.custom-select-wrapper.open .custom-select-arrow {
+    transform: rotate(180deg);
+    color: var(--primary-color);
+}
+
+.custom-select-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 320px;
+}
+
+.custom-select-wrapper.open .custom-select-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.custom-select-search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.custom-select-search-box svg {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.custom-select-search-input {
+    width: 100%;
+    border: none !important;
+    background: transparent !important;
+    padding: 4px 0 !important;
+    font-size: 14px !important;
+    font-family: inherit !important;
+    color: var(--text-dark) !important;
+    outline: none !important;
+    min-height: auto !important;
+    box-shadow: none !important;
+}
+
+.custom-select-search-input::placeholder {
+    color: #94a3b8;
+}
+
+.custom-select-options {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    padding: 6px;
+    max-height: 240px;
+}
+
+.custom-select-decade {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    padding: 8px 10px 4px 10px;
+}
+
+.custom-select-option {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14.5px;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-select-option:hover {
+    background: #f1f5f9;
+    color: var(--primary-color);
+}
+
+.custom-select-option.selected {
+    background: var(--primary-light);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.custom-select-no-results {
+    padding: 16px;
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--text-muted);
 }
 
 /* ==========================================================================
@@ -525,11 +682,6 @@ input:focus, select:focus {
     border: 1px solid rgba(26, 92, 46, 0.15);
     box-shadow: var(--shadow-lg);
     margin: 16px 0;
-}
-
-.prompt-icon {
-    font-size: 44px;
-    margin-bottom: 12px;
 }
 
 .prompt-actions {
