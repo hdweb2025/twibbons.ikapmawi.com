@@ -34,28 +34,28 @@ $require_registration = get_setting($conn, 'require_registration', '0') === '1';
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<div class="container" style="max-width: 1000px;">
+<div class="container wide-container">
     <div class="header">
-        <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI" style="max-width: 200px; margin-bottom: 20px;">
+        <a href="/" style="display:inline-block;"><img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI"></a>
         <h2>Halaman Admin</h2>
-        <p style="color: #666;">Daftar Alumni yang Telah Mengisi Form</p>
+        <p style="color: var(--text-muted);">Daftar Alumni yang Telah Mengisi Form</p>
     </div>
 
     <!-- Mode Pengaturan -->
-    <div style="background: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        <h3 style="margin-top:0;">Pengaturan Sistem</h3>
-        <form method="POST" style="display: flex; align-items: center; gap: 10px;">
-            <label style="font-weight: bold;">Mode Pendaftaran:</label>
-            <select name="require_registration" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc;">
+    <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 18px; border-radius: var(--border-radius-sm); margin-bottom: 24px;">
+        <h3 style="margin-top:0; margin-bottom: 12px; color: var(--primary-color);">Pengaturan Sistem</h3>
+        <form method="POST" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+            <label style="font-weight: 600; font-size: 14px;">Mode Pendaftaran:</label>
+            <select name="require_registration" style="flex: 1; min-width: 240px; padding: 10px; border-radius: 8px;">
                 <option value="1" <?php echo $require_registration ? 'selected' : ''; ?>>Aktif (Harus Login/Daftar dengan No HP)</option>
                 <option value="0" <?php echo !$require_registration ? 'selected' : ''; ?>>Nonaktif (Quick Join - Cukup Nama & Tahun)</option>
             </select>
-            <button type="submit" name="toggle_registration" class="btn-primary" style="padding: 5px 15px; width: auto;">Simpan</button>
+            <button type="submit" name="toggle_registration" class="btn-primary" style="padding: 10px 20px; width: auto; min-height: 44px;">Simpan Perubahan</button>
         </form>
-        <p style="font-size: 12px; color: #666; margin-bottom:0; margin-top:5px;">Jika dinonaktifkan, alumni tidak perlu mendaftar menggunakan nomor HP untuk menggunakan Twibbon.</p>
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom:0; margin-top:8px;">Jika dinonaktifkan, alumni tidak perlu mendaftar menggunakan nomor HP untuk menggunakan Twibbon.</p>
     </div>
     
-    <div style="overflow-x: auto;">
+    <div class="table-responsive">
         <table class="admin-table">
             <thead>
                 <tr>

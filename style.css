@@ -1,338 +1,674 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-/* Variabel Warna - Memudahkan kustomisasi tema */
+/* ==========================================================================
+   Variabel Warna & Desain Token
+   ========================================================================== */
 :root {
-    --primary-color: #1a5c2e;    /* Hijau Identitas IKAPMAWI */
+    --primary-color: #1a5c2e;       /* Hijau Identitas IKAPMAWI */
     --primary-hover: #134522;
-    --secondary-color: #3498db;  /* Biru untuk tombol download/info */
-    --danger-color: #e74c3c;     /* Merah untuk Reset/Logout */
+    --primary-light: rgba(26, 92, 46, 0.08);
+    --secondary-color: #2980b9;     /* Biru Aksi / Download */
+    --secondary-hover: #1f6391;
+    --accent-color: #d4af37;        /* Gold Aksen */
+    --danger-color: #e74c3c;        /* Merah Reset / Logout */
+    --danger-hover: #c0392b;
     --bg-light: #f4f7f6;
+    --bg-card: #ffffff;
     --text-dark: #2c3e50;
-    --text-muted: #7f8c8d;
-    --white: #ffffff;
-    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.08);
-    --border-radius: 12px;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 12px 32px rgba(26, 92, 46, 0.12);
+    --border-radius: 16px;
+    --border-radius-sm: 10px;
 }
 
-/* Reset & Base */
-* {
+/* ==========================================================================
+   Reset & Base Sizing (Universal Box Model)
+   ========================================================================== */
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-light);
     color: var(--text-dark);
-    line-height: 1.6;
-    padding: 10px;
+    line-height: 1.5;
     min-height: 100vh;
+    min-height: -webkit-fill-available;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    padding: 16px;
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
 }
 
-/* Container Utama */
+/* ==========================================================================
+   Container Responsif
+   ========================================================================== */
 .container {
-    max-width: 600px; /* Ukuran ideal untuk aplikasi mobile-first */
     width: 100%;
-    margin: 5px auto;
-    background: var(--white);
-    padding: 5px;
+    max-width: 600px;
+    background: var(--bg-card);
+    padding: 24px;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow-soft);
+    box-shadow: var(--shadow-md);
+    margin: auto 0;
+    transition: all 0.3s ease;
 }
 
-/* Header & Logo */
+/* Di layar tablet/desktop, container editor & galeri otomatis melebar */
+.container.wide-container {
+    max-width: 1020px;
+}
+
+/* ==========================================================================
+   Header & Brand
+   ========================================================================== */
 .header {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
 }
 
 .header img {
     max-width: 160px;
+    width: 100%;
     height: auto;
-    margin-bottom: 5px;
+    object-fit: contain;
+    margin-bottom: 12px;
 }
 
 .header h2 {
     font-weight: 700;
     color: var(--primary-color);
-    font-size: 1.4rem;
+    font-size: clamp(1.25rem, 3vw, 1.6rem);
 }
 
-/* Styling Form (Login & Register) */
-form {
+.user-badge {
+    background: var(--primary-light);
+    border: 1px solid rgba(26, 92, 46, 0.15);
+    border-radius: 30px;
+    padding: 8px 18px;
+    display: inline-block;
+    margin: 0 auto 16px auto;
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--primary-color);
+}
+
+/* ==========================================================================
+   Layout Editor Adaptif (Dual-Column di Layar Lebar)
+   ========================================================================== */
+.editor-layout {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin: 20px 0;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="password"],
-select {
+    gap: 20px;
     width: 100%;
-    padding: 12px 15px;
-    border: 1.5px solid #eee;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: inherit;
-    transition: all 0.3s ease;
+    margin-top: 10px;
 }
 
-input:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(26, 92, 46, 0.1);
+@media (min-width: 768px) {
+    .editor-layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 460px) 1fr;
+        gap: 30px;
+        align-items: start;
+    }
 }
 
-/* Button System */
-.btn-primary, .btn-secondary, .btn-reset {
+.editor-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
-    border: none;
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-block;
-    text-align: center;
-    text-decoration: none;
 }
 
-.btn-primary {
-    background: var(--primary-color);
-    color: var(--white);
+.editor-right {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
 }
 
-.btn-primary:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background: var(--secondary-color);
-    color: var(--white);
-}
-
-.btn-secondary:hover {
-    background: #2980b9;
-}
-
-.btn-reset {
-    background: var(--danger-color);
-    color: var(--white);
-    padding: 8px 15px;
-    font-size: 12px;
-}
-
-/* Editor / Canvas Area */
+/* ==========================================================================
+   Area Canvas Twibbon
+   ========================================================================== */
 .canvas-wrapper {
     width: 100%;
-    aspect-ratio: 1 / 1; /* Menjaga kotak tetap sempurna */
-    margin-bottom: 15px;
-    border-radius: 8px;
-    background-color: #e0e0e0;
+    max-width: 460px;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--border-radius-sm);
+    background-color: #2b2b2b;
+    background-image: 
+        linear-gradient(45deg, #333 25%, transparent 25%), 
+        linear-gradient(-45deg, #333 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #333 75%), 
+        linear-gradient(-45deg, transparent 75%, #333 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
     overflow: hidden;
     position: relative;
-    border: 2px solid #eee;
+    border: 2px solid var(--border-color);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.15), var(--shadow-sm);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
 #mainCanvas {
     width: 100%;
     height: 100%;
     display: block;
-    touch-action: none; /* KRUSIAL: Mencegah scroll saat geser foto */
+    cursor: grab;
+    touch-action: none;
 }
 
-/* Zoom Controls */
-.zoom-control {
-    background: #f9f9f9;
-    padding: 15px;
-    border-radius: 10px;
-    margin: 15px 0;
-    border: 1px solid #f0f0f0;
+#mainCanvas:active {
+    cursor: grabbing;
 }
 
-.zoom-control label {
-    display: block;
+.canvas-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+/* ==========================================================================
+   Toolbar Kontrol (Zoom Slider, +, -, Rotasi, Reset)
+   ========================================================================== */
+.zoom-control-box {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.zoom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 13px;
     font-weight: 600;
-    margin-bottom: 10px;
-    color: var(--text-muted);
+    color: var(--text-dark);
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
 }
 
 #zoomSlider {
-    width: 100%;
-    height: 6px;
-    background: #dfe6e9;
-    border-radius: 5px;
+    flex: 1;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 6px;
     outline: none;
     appearance: none;
     -webkit-appearance: none;
-    margin-bottom: 15px;
+    cursor: pointer;
 }
 
 #zoomSlider::-webkit-slider-thumb {
     appearance: none;
     -webkit-appearance: none;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     background: var(--primary-color);
+    border: 2px solid #ffffff;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    transition: transform 0.1s ease;
 }
 
-/* Gallery View */
+#zoomSlider::-webkit-slider-thumb:active {
+    transform: scale(1.15);
+}
+
+#zoomSlider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: var(--primary-color);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+/* Tool Buttons (+, -, Rotasi, Reset) */
+.tool-btn-group {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.btn-tool {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 4px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-dark);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 44px; /* Touch target standar mobile */
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.btn-tool:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+.btn-tool:active {
+    transform: translateY(1px);
+}
+
+.btn-tool-reset {
+    color: var(--danger-color);
+    border-color: #fecaca;
+    background: #fff5f5;
+}
+
+.btn-tool-reset:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
+
+/* ==========================================================================
+   Button System
+   ========================================================================== */
+.btn-primary, .btn-secondary, .btn-download, .btn-outline {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    text-decoration: none;
+    min-height: 48px;
+    box-sizing: border-box;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(26, 92, 46, 0.2);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 16px rgba(26, 92, 46, 0.28);
+}
+
+.btn-download {
+    background: var(--secondary-color);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(41, 128, 185, 0.2);
+}
+
+.btn-download:hover:not(:disabled) {
+    background: var(--secondary-hover);
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 16px rgba(41, 128, 185, 0.3);
+}
+
+.btn-download:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    opacity: 0.65;
+    box-shadow: none;
+    transform: none;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.btn-outline:hover {
+    background: #f8fafc;
+    color: var(--text-dark);
+}
+
+/* ==========================================================================
+   Form Styling (Login, Register, Quick Join)
+   ========================================================================== */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="file"],
+select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    background: #ffffff;
+    color: var(--text-dark);
+    min-height: 48px;
+    transition: all 0.2s ease;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3.5px rgba(26, 92, 46, 0.12);
+}
+
+/* ==========================================================================
+   Gallery View (Grid Responsif Multi-Device)
+   ========================================================================== */
 .twibbon-gallery {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 15px;
+    gap: 16px;
     margin-top: 20px;
+    width: 100%;
+}
+
+@media (min-width: 480px) {
+    .twibbon-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 18px;
+    }
+}
+
+@media (min-width: 768px) {
+    .twibbon-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 22px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .twibbon-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        gap: 24px;
+    }
 }
 
 .twibbon-card {
-    background: var(--white);
-    border-radius: var(--border-radius);
+    background: var(--bg-card);
+    border-radius: var(--border-radius-sm);
     overflow: hidden;
     text-decoration: none;
     color: var(--text-dark);
-    transition: all 0.3s ease;
-    border: 1px solid #f0f0f0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
+    box-shadow: var(--shadow-sm);
 }
 
 .twibbon-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(26, 92, 46, 0.3);
+}
+
+.twibbon-card-img-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f1f5f9;
+    overflow: hidden;
 }
 
 .twibbon-card-img {
     width: 100%;
-    aspect-ratio: 1/1;
+    height: 100%;
     object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.twibbon-card:hover .twibbon-card-img {
+    transform: scale(1.04);
+}
+
+.twibbon-card-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
 }
 
 .twibbon-card-title {
-    padding: 10px;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     text-align: center;
+    color: var(--text-dark);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* Stats & Footer */
-.usage-stats {
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-}
-
-.user-list {
-    background: #fdfdfd;
-    padding: 10px;
-    border-radius: 8px;
-    max-height: 150px;
-    overflow-y: auto;
-    border: 1px solid #f5f5f5;
-}
-
-.user-list ul {
-    list-style: none;
-}
-
-.user-list li {
-    padding: 6px 0;
-    font-size: 13px;
-    border-bottom: 1px dashed #eee;
-}
-
-.site-footer {
-    text-align: center;
-    margin-top: 40px;
+.twibbon-card-btn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: var(--primary-light);
+    color: var(--primary-color);
+    border-radius: 6px;
     font-size: 12px;
-    color: var(--text-muted);
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s ease;
 }
 
-/* Helper Classes */
-.mt-10 { margin-top: 10px; }
-.text-center { text-align: center; }
-.text-red { color: var(--danger-color); }
+.twibbon-card:hover .twibbon-card-btn {
+    background: var(--primary-color);
+    color: #ffffff;
+}
 
-/* Styling khusus untuk kotak ajakan Login/Daftar */
+/* ==========================================================================
+   Login Prompt & Auth Box
+   ========================================================================== */
 .login-prompt {
     text-align: center;
-    background: linear-gradient(145deg, #ffffff, #f9fbf9);
-    padding: 30px 20px;
-    border-radius: 15px;
-    border: 1px solid #e0eee0; /* Hijau sangat muda */
-    box-shadow: 0 10px 30px rgba(26, 92, 46, 0.08);
-    margin: 20px 0;
+    background: linear-gradient(145deg, #ffffff, #f7faf7);
+    padding: 32px 24px;
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(26, 92, 46, 0.15);
+    box-shadow: var(--shadow-lg);
+    margin: 16px 0;
 }
 
 .prompt-icon {
-    font-size: 40px;
-    margin-bottom: 10px;
-}
-
-.login-prompt h3 {
-    color: var(--primary-color);
-    margin-bottom: 10px;
-    font-weight: 700;
-}
-
-.login-prompt p {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 25px;
+    font-size: 44px;
+    margin-bottom: 12px;
 }
 
 .prompt-actions {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     align-items: center;
+    width: 100%;
+    margin-top: 16px;
 }
 
-/* Garis pembatas estetik */
 .divider {
     width: 100%;
     display: flex;
     align-items: center;
     text-align: center;
-    color: #ccc;
-    font-size: 12px;
+    color: var(--text-muted);
+    font-size: 13px;
 }
 
 .divider::before, .divider::after {
     content: '';
     flex: 1;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .divider span {
-    padding: 0 10px;
+    padding: 0 12px;
 }
 
 .btn-link {
     font-size: 14px;
     color: var(--primary-color);
     text-decoration: none;
-    transition: 0.3s;
+    transition: 0.2s;
 }
 
 .btn-link:hover {
     color: var(--primary-hover);
     text-decoration: underline;
+}
+
+/* ==========================================================================
+   Usage Stats & Admin Tables
+   ========================================================================== */
+.usage-stats-card {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    padding: 14px;
+    text-align: center;
+}
+
+.usage-count-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.usage-count-label {
+    font-size: 12.5px;
+    color: var(--text-muted);
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+    margin: 20px 0;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+    font-size: 14px;
+}
+
+.admin-table th {
+    background: #f1f5f9;
+    color: var(--text-dark);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.admin-table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.admin-table tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.site-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 15px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    width: 100%;
+}
+
+.site-footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   Media Queries untuk Layar Sangat Kecil (< 360px)
+   ========================================================================== */
+@media (max-width: 360px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        padding: 16px 12px;
+    }
+    .tool-btn-group {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .btn-primary, .btn-download {
+        padding: 12px 14px;
+        font-size: 14px;
+    }
 }

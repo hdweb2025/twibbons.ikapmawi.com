@@ -100,6 +100,12 @@ if (mysqli_num_rows($idul_adha_check) == 0) {
     mysqli_query($conn, "INSERT INTO events (name, slug, template, hole_x, hole_y, hole_w, hole_h) VALUES ('Selamat Idul Adha 1447H / 2026M', 'idul-adha-2026', 'uploads/templates/idul-adha-2026.png', 0, 0, 1080, 1080)");
 }
 
+// Auto-add Maulid Nabi 2026 event if not exists
+$maulid_check = mysqli_query($conn, "SELECT id FROM events WHERE slug = 'maulid-nabi-2026'");
+if (mysqli_num_rows($maulid_check) == 0) {
+    mysqli_query($conn, "INSERT INTO events (name, slug, template, hole_x, hole_y, hole_w, hole_h) VALUES ('Peringatan Maulid Nabi Muhammad SAW 1448 H / 2026 M', 'maulid-nabi-2026', 'uploads/templates/maulid-nabi-2026.png', 0, 0, 1080, 1080)");
+}
+
 // Create settings table for dynamic configuration
 mysqli_query($conn, "CREATE TABLE IF NOT EXISTS settings (
     setting_key VARCHAR(50) PRIMARY KEY,

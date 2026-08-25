@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment & Credentials
+.env
+.env.local
+.env.*.local
+*.local.php
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# Temporary & Log Files
+*.log
+*.tmp
+*.bak
+*.cache
+
+# Build / Output / Archive
+*.zip
+*.tar.gz
+*.rar
+dist/
+build/
+
+# User Uploaded Photos (Pastikan template tetap ditrack, hanya upload user yang diignore jika diperlukan)
+# uploads/photos/*
+# !uploads/photos/.gitkeep
+# !uploads/templates/

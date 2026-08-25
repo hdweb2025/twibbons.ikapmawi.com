@@ -29,20 +29,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Anda Alumni MWI? - Twibbon IKAPMAWI</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Alumni MWI - Twibbon IKAPMAWI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1a5c2e">
     <link rel="icon" href="/assets/icon.png">
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<div class="container">
+<div class="container" style="max-width: 460px;">
     <div class="header">
-        <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI">
-        <h2>Kamu Alumni MWI ?</h2>
-        <p style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 25px;">Luangkan Sejenak untuk Beri Tahu kami, <br> Anda Alumni MWI Tahun Berapa?</p>
+        <a href="/" style="display:inline-block;"><img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI"></a>
+        <h2>Kamu Alumni MWI?</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px; margin-bottom: 20px;">Luangkan sejenak untuk beritahu kami,<br> Anda alumni MWI tahun berapa?</p>
     </div>
     <?php if(isset($error)) echo "<p style='color:#e74c3c; background:#fadbd8; padding:12px; border-radius:8px; text-align:center; font-size:14px; margin: 0 auto 20px auto; max-width: 400px;'>$error</p>"; ?>
     <form method="POST">

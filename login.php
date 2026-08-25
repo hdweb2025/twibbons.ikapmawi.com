@@ -35,17 +35,19 @@ if (isset($_POST['login'])) {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
     <title>Login IKAPMAWI</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1a5c2e">
     <link rel="icon" href="/assets/icon.png">
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="max-width: 440px;">
         <div class="header">
-            <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI" style="margin-top: 25px;">
+            <a href="/" style="display:inline-block;"><img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI"></a>
             <h2>Login Alumni</h2>
         </div>
         <form method="GET" action="login.php" style="display:none;">
