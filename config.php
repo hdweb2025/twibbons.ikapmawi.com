@@ -106,6 +106,12 @@ if (mysqli_num_rows($maulid_check) == 0) {
     mysqli_query($conn, "INSERT INTO events (name, slug, template, hole_x, hole_y, hole_w, hole_h) VALUES ('Peringatan Maulid Nabi Muhammad SAW 1448 H / 2026 M', 'maulid-nabi-2026', 'uploads/templates/maulid-nabi-2026.png', 0, 0, 1080, 1080)");
 }
 
+// Auto-add Creative Talk 2026 event if not exists
+$creative_talk_check = mysqli_query($conn, "SELECT id FROM events WHERE slug = 'creative-talk-2026'");
+if (mysqli_num_rows($creative_talk_check) == 0) {
+    mysqli_query($conn, "INSERT INTO events (name, slug, template, hole_x, hole_y, hole_w, hole_h) VALUES ('IKAPMAWI Creative Talk 2026: From Ideas to Books', 'creative-talk-2026', 'uploads/templates/twibbon-ikapmawi-creative-talk-2026.png', 20, 390, 680, 600)");
+}
+
 // Create settings table for dynamic configuration
 mysqli_query($conn, "CREATE TABLE IF NOT EXISTS settings (
     setting_key VARCHAR(50) PRIMARY KEY,
