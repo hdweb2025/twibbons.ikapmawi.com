@@ -70,161 +70,216 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
         </a>
         <?php if (isset($_SESSION['user'])): ?>
             <div class="user-badge">
-                Assalamualaikum, <b><?php echo htmlspecialchars($_SESSION['user']); ?></b> (Alumni <?php echo htmlspecialchars($_SESSION['tahun']); ?>)
+                Assalamualaikum, <b><?php echo htmlspecialchars($_SESSION['user']); ?></b> (<?php echo htmlspecialchars($_SESSION['keterangan'] ?? $_SESSION['peran'] ?? ('Alumni ' . ($_SESSION['tahun'] ?? ''))); ?>)
             </div>
         <?php endif; ?>
     </header>
 
-    <?php if ($event): // If a specific event is being viewed ?>
-        <?php if (isset($_SESSION['user'])): // If user is logged in, show editor ?>
-            
-            <div class="editor-layout">
-                <!-- Sisi Kiri: Preview Canvas Twibbon Responsif -->
-                <div class="editor-left">
-                    <div class="canvas-wrapper">
-                        <canvas id="mainCanvas" width="1080" height="1080" 
-                            data-template="/<?php echo $event['template']; ?>" 
-                            data-event-id="<?php echo $event['id']; ?>"
-                            data-hole-x="<?php echo $event['hole_x']; ?>"
-                            data-hole-y="<?php echo $event['hole_y']; ?>"
-                            data-hole-w="<?php echo $event['hole_w']; ?>"
-                            data-hole-h="<?php echo $event['hole_h']; ?>">
-                        </canvas>
+    <?php if ($event): // If a specific event is being viewed, render editor directly ?>
+        <div class="editor-layout">
+            <!-- Sisi Kiri: Preview Canvas Twibbon Responsif -->
+            <div class="editor-left">
+                <div class="canvas-wrapper">
+                    <canvas id="mainCanvas" width="1080" height="1080" 
+                        data-template="/<?php echo $event['template']; ?>" 
+                        data-event-id="<?php echo $event['id']; ?>"
+                        data-event-slug="<?php echo htmlspecialchars($event['slug']); ?>"
+                        data-logged-in="<?php echo isset($_SESSION['user']) ? '1' : '0'; ?>"
+                        data-hole-x="<?php echo $event['hole_x']; ?>"
+                        data-hole-y="<?php echo $event['hole_y']; ?>"
+                        data-hole-w="<?php echo $event['hole_w']; ?>"
+                        data-hole-h="<?php echo $event['hole_h']; ?>">
+                    </canvas>
+                </div>
+                <div class="canvas-hint">
+                    <span>💡</span> Geser / Drag untuk atur posisi • Cubit (pinch) atau slider untuk zoom
+                </div>
+            </div>
+
+            <!-- Sisi Kanan: Kontrol & Tombol Aksi -->
+            <div class="editor-right">
+                <div>
+                    <span class="event-badge">Twibbon Resmi IKAPMAWI</span>
+                    <h3 style="color: var(--primary-color); margin-bottom: 4px; font-size: 20px;"><?php echo htmlspecialchars($event['name']); ?></h3>
+                    <p style="font-size: 13.5px; color: var(--text-muted);">Silahkan pilih foto terbaik Anda untuk dipasang pada bingkai Twibbon.</p>
+                </div>
+
+                <!-- Input Upload File -->
+                <div>
+                    <input type="file" id="upload" accept="image/*" style="display:none">
+                    <label for="upload" class="btn-primary" style="cursor: pointer;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Pilih Foto Anda
+                    </label>
+                </div>
+
+                <!-- Kotak Pengaturan Zoom & Rotasi -->
+                <div class="zoom-control-box">
+                    <div class="zoom-header">
+                        <span>Pengaturan Foto</span>
+                        <span id="zoomValBadge" style="font-weight: 500; color: var(--text-muted); font-size: 12px;">100%</span>
                     </div>
-                    <div class="canvas-hint">
-                        <span>💡</span> Geser / Drag untuk atur posisi • Cubit (pinch) atau scroll untuk zoom
+                    
+                    <div class="slider-container">
+                        <input type="range" id="zoomSlider" min="0.01" max="5" step="0.001" value="1" title="Atur Ukuran Foto">
+                    </div>
+
+                    <!-- Tombol Cepat: Zoom In, Zoom Out, Putar, Reset -->
+                    <div class="tool-btn-group">
+                        <button type="button" id="zoomOutBtn" class="btn-tool" title="Perkecil Foto">
+                            🔍- Perkecil
+                        </button>
+                        <button type="button" id="zoomInBtn" class="btn-tool" title="Perbesar Foto">
+                            🔍+ Perbesar
+                        </button>
+                        <button type="button" id="rotateBtn" class="btn-tool" title="Putar Foto 90 Derajat">
+                            ↻ Putar
+                        </button>
+                        <button type="button" id="resetBtn" class="btn-tool btn-tool-reset" title="Kembalikan Posisi Semula">
+                            ↺ Reset
+                        </button>
                     </div>
                 </div>
 
-                <!-- Sisi Kanan: Kontrol & Tombol Aksi -->
-                <div class="editor-right">
-                    <div>
-                        <h3 style="color: var(--primary-color); margin-bottom: 4px;"><?php echo htmlspecialchars($event['name']); ?></h3>
-                        <p style="font-size: 13.5px; color: var(--text-muted);">Silahkan pilih foto terbaik Anda untuk dipasang pada bingkai Twibbon.</p>
+                <!-- Tombol Download -->
+                <div>
+                    <button id="download" class="btn-download" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Download Twibbon Anda
+                    </button>
+                </div>
+
+                <!-- Statistik Partisipasi Sahabat & Alumni MWI -->
+                <?php
+                $current_event_id = $event['id'];
+                $usage_res = mysqli_query($conn, "SELECT users.nama_lengkap FROM event_usage JOIN users ON event_usage.user_id = users.id WHERE event_usage.event_id = $current_event_id ORDER BY event_usage.created_at DESC");
+                $total_usage = mysqli_num_rows($usage_res);
+                ?>
+                <div class="usage-stats-card">
+                    <div class="usage-count-number" id="usageCountDisplay"><?php echo $total_usage; ?></div>
+                    <div class="usage-count-label">Sahabat Santri, Asatidz & Alumni telah berpartisipasi dengan Twibbon ini</div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                    <a href="/" class="btn-link">← Kembali ke Galeri</a>
+                    <?php if (isset($_SESSION['user'])): ?>
+                        <a href="/logout.php" style="color: var(--danger-color); font-size: 13px; text-decoration: none;">Keluar / Ganti Akun</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Identitas Partisipan Sebelum Download (Santri, Alumni, Asatidz, Umum) -->
+        <div id="participantModal" class="twibbon-modal-overlay" style="display: none;" aria-hidden="true">
+            <div class="twibbon-modal-dialog">
+                <div class="twibbon-modal-header">
+                    <span class="modal-badge-sanad">Keluarga Besar MWI Kebarongan</span>
+                    <h3 class="twibbon-modal-title">Satu Langkah Menuju Twibbon Anda</h3>
+                    <p class="twibbon-modal-subtitle">Silakan isi identitas singkat untuk pencatatan partisipasi keluarga besar MWI.</p>
+                    <button type="button" class="btn-modal-close" onclick="closeParticipantModal()" aria-label="Tutup">&times;</button>
+                </div>
+
+                <form id="participantForm" class="twibbon-modal-form" onsubmit="handleParticipantSubmit(event)">
+                    <input type="hidden" id="participantEventId" name="event_id" value="<?php echo $event['id']; ?>">
+                    
+                    <label class="form-label">Status Anda di MWI:</label>
+                    <div class="role-selector-grid">
+                        <button type="button" class="role-pill-btn active" data-role="Santri Aktif" onclick="selectRole('Santri Aktif')">
+                            <span class="role-icon">🎓</span>
+                            <span class="role-title">Santri Aktif</span>
+                        </button>
+                        <button type="button" class="role-pill-btn" data-role="Alumni" onclick="selectRole('Alumni')">
+                            <span class="role-icon">🤝</span>
+                            <span class="role-title">Alumni</span>
+                        </button>
+                        <button type="button" class="role-pill-btn" data-role="Asatidz / Guru" onclick="selectRole('Asatidz / Guru')">
+                            <span class="role-icon">📖</span>
+                            <span class="role-title">Asatidz / Guru</span>
+                        </button>
+                        <button type="button" class="role-pill-btn" data-role="Simpatisan / Umum" onclick="selectRole('Simpatisan / Umum')">
+                            <span class="role-icon">🌟</span>
+                            <span class="role-title">Wali / Umum</span>
+                        </button>
+                    </div>
+                    <input type="hidden" id="selectedRole" name="peran" value="Santri Aktif">
+
+                    <!-- Input Nama Lengkap -->
+                    <div class="form-group-modal">
+                        <label for="modalNama" class="form-label">Nama Lengkap <span class="required-star">*</span></label>
+                        <input type="text" id="modalNama" name="nama" class="modal-input" placeholder="Masukkan nama lengkap Anda..." required autocomplete="name">
                     </div>
 
-                    <!-- Input Upload File -->
-                    <div>
-                        <input type="file" id="upload" accept="image/*" style="display:none">
-                        <label for="upload" class="btn-primary" style="cursor: pointer;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                            Pilih Foto Anda
-                        </label>
+                    <!-- Dynamic Role-Specific Fields -->
+                    <!-- 1. Santri Aktif -->
+                    <div id="fieldSantri" class="role-dynamic-field">
+                        <label for="selectJenjangSantri" class="form-label">Jenjang & Kelas Santri <span class="required-star">*</span></label>
+                        <select id="selectJenjangSantri" name="keterangan_santri" class="modal-select">
+                            <option value="Santri MA WI - Kelas 10">Santri MA WI Kebarongan - Kelas 10</option>
+                            <option value="Santri MA WI - Kelas 11" selected>Santri MA WI Kebarongan - Kelas 11</option>
+                            <option value="Santri MA WI - Kelas 12">Santri MA WI Kebarongan - Kelas 12</option>
+                            <option value="Santri MTs WI - Kelas 7">Santri MTs WI Kebarongan - Kelas 7</option>
+                            <option value="Santri MTs WI - Kelas 8">Santri MTs WI Kebarongan - Kelas 8</option>
+                            <option value="Santri MTs WI - Kelas 9">Santri MTs WI Kebarongan - Kelas 9</option>
+                            <option value="Santri Pondok Pesantren MWI">Santri Pondok Pesantren MWI</option>
+                        </select>
                     </div>
 
-                    <!-- Kotak Pengaturan Zoom & Rotasi -->
-                    <div class="zoom-control-box">
-                        <div class="zoom-header">
-                            <span>Pengaturan Foto</span>
-                            <span id="zoomValBadge" style="font-weight: 500; color: var(--text-muted); font-size: 12px;">100%</span>
-                        </div>
-                        
-                        <div class="slider-container">
-                            <input type="range" id="zoomSlider" min="0.01" max="5" step="0.001" value="1" title="Atur Ukuran Foto">
-                        </div>
-
-                        <!-- Tombol Cepat: Zoom In, Zoom Out, Putar, Reset -->
-                        <div class="tool-btn-group">
-                            <button type="button" id="zoomOutBtn" class="btn-tool" title="Perkecil Foto">
-                                🔍- Perkecil
-                            </button>
-                            <button type="button" id="zoomInBtn" class="btn-tool" title="Perbesar Foto">
-                                🔍+ Perbesar
-                            </button>
-                            <button type="button" id="rotateBtn" class="btn-tool" title="Putar Foto 90 Derajat">
-                                ↻ Putar
-                            </button>
-                            <button type="button" id="resetBtn" class="btn-tool btn-tool-reset" title="Kembalikan Posisi Semula">
-                                ↺ Reset
-                            </button>
-                        </div>
+                    <!-- 2. Alumni -->
+                    <div id="fieldAlumni" class="role-dynamic-field" style="display: none;">
+                        <label for="selectTahunAlumni" class="form-label">Tahun Kelulusan Alumni <span class="required-star">*</span></label>
+                        <select id="selectTahunAlumni" name="tahun_alumni" class="modal-select">
+                            <?php for ($y = date('Y'); $y >= 1950; $y--): ?>
+                                <option value="<?php echo $y; ?>">Alumni Tahun <?php echo $y; ?></option>
+                            <?php endfor; ?>
+                        </select>
                     </div>
 
-                    <!-- Tombol Download -->
-                    <div>
-                        <button id="download" class="btn-download" disabled>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            Download Twibbon Anda
+                    <!-- 3. Asatidz -->
+                    <div id="fieldAsatidz" class="role-dynamic-field" style="display: none;">
+                        <label for="selectKeteranganAsatidz" class="form-label">Unit Pengabdian / Lembaga <span class="required-star">*</span></label>
+                        <select id="selectKeteranganAsatidz" name="keterangan_asatidz" class="modal-select">
+                            <option value="Dewan Asatidz MA WI Kebarongan" selected>Dewan Asatidz MA WI Kebarongan</option>
+                            <option value="Dewan Asatidz MTs WI Kebarongan">Dewan Asatidz MTs WI Kebarongan</option>
+                            <option value="Pengasuh / Pembina Pondok Pesantren MWI">Pengasuh / Pembina Pondok Pesantren MWI</option>
+                            <option value="Dewan Guru & Yayasan MWI">Dewan Guru & Yayasan MWI</option>
+                        </select>
+                    </div>
+
+                    <!-- 4. Simpatisan / Umum -->
+                    <div id="fieldSimpatisan" class="role-dynamic-field" style="display: none;">
+                        <label for="selectKeteranganSimpatisan" class="form-label">Kategori <span class="required-star">*</span></label>
+                        <select id="selectKeteranganSimpatisan" name="keterangan_simpatisan" class="modal-select">
+                            <option value="Wali Santri MWI Kebarongan" selected>Wali Santri MWI Kebarongan</option>
+                            <option value="Simpatisan / Sahabat IKAPMAWI">Simpatisan / Sahabat IKAPMAWI</option>
+                            <option value="Tamu Undangan Talkshow / Umum">Tamu Undangan Talkshow / Umum</option>
+                        </select>
+                    </div>
+
+                    <!-- Nomor WhatsApp (Opsional) -->
+                    <div class="form-group-modal">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <label for="modalHp" class="form-label">Nomor WhatsApp</label>
+                            <span class="label-optional">Boleh dikosongkan</span>
+                        </div>
+                        <input type="tel" id="modalHp" name="hp" class="modal-input" placeholder="08xxxxxxxxxx (Opsional)" autocomplete="tel">
+                        <div class="modal-help-text">Jika diisi, nomor hanya digunakan untuk silaturahmi & info agenda madrasah.</div>
+                    </div>
+
+                    <div id="modalErrorMsg" class="modal-alert-error" style="display: none;"></div>
+
+                    <div class="modal-actions">
+                        <button type="submit" id="btnSubmitModal" class="btn-modal-submit">
+                            <span class="btn-text">Simpan & Unduh Twibbon ⬇</span>
+                            <span class="btn-spinner" style="display: none;">Menyiapkan Twibbon...</span>
                         </button>
                     </div>
 
-                    <!-- Statistik Partisipasi -->
-                    <?php
-                    $current_event_id = $event['id'];
-                    $usage_res = mysqli_query($conn, "SELECT users.nama_lengkap FROM event_usage JOIN users ON event_usage.user_id = users.id WHERE event_usage.event_id = $current_event_id ORDER BY event_usage.created_at DESC");
-                    $total_usage = mysqli_num_rows($usage_res);
-                    ?>
-                    <div class="usage-stats-card">
-                        <div class="usage-count-number"><?php echo $total_usage; ?></div>
-                        <div class="usage-count-label">Alumni MWI telah berpartisipasi dengan Twibbon ini</div>
+                    <div class="modal-privacy-notice">
+                        🔒 Data Anda terjaga dengan amanah sesuai UU PDP No. 27/2022.
                     </div>
-
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
-                        <a href="/" class="btn-link">← Kembali ke Galeri</a>
-                        <a href="/logout.php" style="color: var(--danger-color); font-size: 13px; text-decoration: none;">Keluar Akun</a>
-                    </div>
-                </div>
+                </form>
             </div>
-
-        <?php else: // If user is not logged in, show login/join prompt ?>
-            <div class="login-prompt">
-                <h2 style="color: var(--primary-color); margin-bottom: 8px;"><?php echo htmlspecialchars($event['name']); ?></h2>
-                <p style="color: var(--text-muted); font-size: 14.5px; max-width: 460px; margin: 0 auto 20px auto;">
-                    Gunakan bingkai Twibbon eksklusif dari <b>IKAPMAWI</b> untuk merayakan momen spesial bersama rekan alumni.
-                </p>
-                
-                <?php if ($require_registration): ?>
-                    <?php 
-                        $current_slug = $event['slug'];
-                        $login_url = "/login.php?redirect=" . urlencode($current_slug);
-                        $register_url = "/register.php?redirect=" . urlencode($current_slug);
-                    ?>
-                    <div class="prompt-actions" style="max-width: 360px; margin: 0 auto;">
-                        <a href="<?php echo $register_url; ?>" class="btn-primary">Buat Twibbon Sekarang</a>
-                        <div class="divider"><span>atau</span></div>
-                        <a href="<?php echo $login_url; ?>" class="btn-link">Sudah punya akun? <b>Masuk</b></a>
-                    </div>
-                <?php else: ?>
-                    <form method="POST" class="quick-join-form" style="max-width: 380px; margin: 20px auto 0 auto;">
-                        <input type="text" name="nama" placeholder="Nama Lengkap Anda" required>
-                        
-                        <!-- Modern Searchable Alumni Year Dropdown -->
-                        <div class="custom-select-wrapper">
-                            <input type="hidden" name="tahun" id="tahunQuickJoin" required>
-                            <div class="custom-select-trigger placeholder" tabindex="0" role="combobox" aria-expanded="false">
-                                <span class="custom-select-text">Alumni Tahun Berapa?</span>
-                                <svg class="custom-select-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                            </div>
-                            <div class="custom-select-dropdown">
-                                <div class="custom-select-search-box">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                    <input type="text" class="custom-select-search-input" placeholder="Ketik tahun (contoh: 2018)..." autocomplete="off">
-                                </div>
-                                <div class="custom-select-options">
-                                    <?php 
-                                    $current_decade = null;
-                                    for ($i = date('Y')+1; $i >= 1950; $i--): 
-                                        $decade_label = 'Tahun ' . (floor($i / 10) * 10) . '-an';
-                                        if ($current_decade !== $decade_label):
-                                            $current_decade = $decade_label;
-                                    ?>
-                                        <div class="custom-select-decade"><?php echo $decade_label; ?></div>
-                                    <?php endif; ?>
-                                        <div class="custom-select-option" data-value="<?php echo $i; ?>" data-label="<?php echo $i; ?>">
-                                            <span>Tahun <?php echo $i; ?></span>
-                                            <span style="font-size: 11px; color: var(--text-muted);">Alumni</span>
-                                        </div>
-                                    <?php endfor; ?>
-                                    <div class="custom-select-no-results" style="display: none;">Tahun tidak ditemukan</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="submit" name="quick_join" class="btn-primary">Lanjut ke Twibbon →</button>
-                    </form>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
+        </div>
 
     <?php else: // If no specific event, show the gallery ?>
         <div style="text-align: center; margin-bottom: 24px;">
@@ -289,7 +344,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
 </div>
 
 <script src="/dropdown.js"></script>
-<?php if (isset($_SESSION['user']) && $event): ?>
+<?php if ($event): ?>
 <script src="/script.js"></script>
 <?php endif; ?>
 

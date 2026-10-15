@@ -194,24 +194,25 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "No,Nama Lengkap,Tahun Alumni,Nomor HP,Tanggal Daftar\n";
+            csvContent += "No,Nama Lengkap,Peran,Keterangan Tingkat,Nomor HP / ID,Tanggal Daftar\n";
 
             rows.forEach((row, index) => {
                 const cols = row.querySelectorAll('td');
-                if (cols.length >= 5) {
+                if (cols.length >= 6) {
                     const no = index + 1;
                     const nama = `"${cols[1].textContent.trim().replace(/"/g, '""')}"`;
-                    const tahun = `"${cols[2].textContent.trim().replace(/"/g, '""')}"`;
-                    const hp = `"${cols[3].textContent.trim().replace(/"/g, '""')}"`;
-                    const tanggal = `"${cols[4].textContent.trim().replace(/"/g, '""')}"`;
-                    csvContent += `${no},${nama},${tahun},${hp},${tanggal}\n`;
+                    const peran = `"${cols[2].textContent.trim().replace(/"/g, '""')}"`;
+                    const ket = `"${cols[3].textContent.trim().replace(/"/g, '""')}"`;
+                    const hp = `"${cols[4].textContent.trim().replace(/"/g, '""')}"`;
+                    const tanggal = `"${cols[5].textContent.trim().replace(/"/g, '""')}"`;
+                    csvContent += `${no},${nama},${peran},${ket},${hp},${tanggal}\n`;
                 }
             });
 
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `data_alumni_ikapmawi_${new Date().toISOString().slice(0,10)}.csv`);
+            link.setAttribute("download", `data_partisipan_twibbon_ikapmawi_${new Date().toISOString().slice(0,10)}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

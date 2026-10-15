@@ -876,3 +876,296 @@ input:focus, select:focus {
         font-size: 14px;
     }
 }
+
+/* ==========================================================================
+   Modal Identitas Partisipan (Santri, Alumni, Asatidz, Umum)
+   Bespoke Luxury UI & Ergonomics
+   ========================================================================== */
+.twibbon-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 25, 15, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    box-sizing: border-box;
+}
+
+.twibbon-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.twibbon-modal-dialog {
+    background: #ffffff;
+    border-radius: 20px;
+    max-width: 480px;
+    width: 100%;
+    padding: 26px 22px;
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.25);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.94);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+    border: 1px solid rgba(26, 92, 46, 0.12);
+}
+
+.twibbon-modal-overlay.show .twibbon-modal-dialog {
+    transform: scale(1);
+}
+
+.twibbon-modal-header {
+    text-align: center;
+    position: relative;
+    margin-bottom: 20px;
+    padding-right: 28px;
+    padding-left: 28px;
+}
+
+.modal-badge-sanad {
+    display: inline-block;
+    background: #ecfdf5;
+    color: #047857;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    border: 1px solid #a7f3d0;
+}
+
+.twibbon-modal-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+
+.twibbon-modal-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+
+.btn-modal-close {
+    position: absolute;
+    top: -6px;
+    right: -4px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: color 0.2s, background 0.2s;
+}
+
+.btn-modal-close:hover {
+    color: #1e293b;
+    background: #f1f5f9;
+}
+
+.role-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.role-pill-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 12px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    transition: all 0.2s ease;
+    text-align: left;
+    min-height: 48px;
+}
+
+.role-pill-btn:hover {
+    border-color: var(--primary-color);
+    background: #f0fdf4;
+}
+
+.role-pill-btn.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(26, 92, 46, 0.25);
+}
+
+.role-pill-btn .role-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.role-pill-btn .role-title {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.form-group-modal {
+    margin-bottom: 16px;
+}
+
+.role-dynamic-field {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.required-star {
+    color: #dc2626;
+}
+
+.label-optional {
+    font-size: 11.5px;
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+.modal-input, .modal-select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #1e293b;
+    background: #ffffff;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    min-height: 46px;
+}
+
+.modal-input:focus, .modal-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(26, 92, 46, 0.15);
+}
+
+.modal-help-text {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+.btn-modal-submit {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 6px 16px rgba(26, 92, 46, 0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-modal-submit:hover:not(:disabled) {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(26, 92, 46, 0.3);
+}
+
+.btn-modal-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.modal-alert-error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    padding: 9px 13px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    margin-bottom: 14px;
+}
+
+.modal-privacy-notice {
+    text-align: center;
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 14px;
+}
+
+.event-badge {
+    display: inline-block;
+    background: #ecfdf5;
+    color: #047857;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 14px;
+    margin-bottom: 6px;
+    border: 1px solid #a7f3d0;
+}
+
+/* Floating Toast Notification */
+.twibbon-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #0f172a;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 13.5px;
+    font-weight: 500;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    z-index: 10001;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+    pointer-events: none;
+    opacity: 0;
+    max-width: 90vw;
+    text-align: center;
+}
+
+.twibbon-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}

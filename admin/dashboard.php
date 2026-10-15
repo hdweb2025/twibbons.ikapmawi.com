@@ -272,8 +272,8 @@ if ($events_result) {
     $total_events = count($events_list);
 }
 
-// 2. Total Alumni Terdaftar (Non-Admin)
-$users_res = mysqli_query($conn, "SELECT id, nama_lengkap, tahun_alumni, nomor_hp, created_at FROM users WHERE is_admin = 0 ORDER BY created_at DESC");
+// 2. Total Partisipan Terdaftar (Non-Admin: Santri, Alumni, Asatidz)
+$users_res = mysqli_query($conn, "SELECT id, nama_lengkap, peran, keterangan_tingkat, tahun_alumni, nomor_hp, created_at FROM users WHERE is_admin = 0 ORDER BY created_at DESC");
 $users_list = [];
 if ($users_res) {
     while ($u = mysqli_fetch_assoc($users_res)) {
@@ -787,11 +787,11 @@ $soc_wa = get_setting($conn, 'social_whatsapp', '');
                 <div class="admin-card">
                     <div class="admin-card-header">
                         <div>
-                            <h2 class="admin-card-title">Daftar Data Alumni Terdaftar</h2>
-                            <p style="font-size: 13px; color: var(--admin-muted); margin: 4px 0 0 0;">Total alumni yang telah mengisi form atau registrasi akun</p>
+                            <h2 class="admin-card-title">Daftar Partisipan (Santri, Alumni, Asatidz)</h2>
+                            <p style="font-size: 13px; color: var(--admin-muted); margin: 4px 0 0 0;">Total santri, alumni, dan asatidz yang telah berpartisipasi</p>
                         </div>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <input type="text" id="searchAlumniInput" class="form-control" placeholder="Cari nama, tahun, atau no hp..." style="max-width: 260px;">
+                            <input type="text" id="searchAlumniInput" class="form-control" placeholder="Cari nama, status, atau no hp..." style="max-width: 260px;">
                             <button type="button" id="exportCsvBtn" class="btn-sm-outline" style="background: #166534; color: #ffffff; border-color: #166534;">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                 Export ke CSV / Excel
@@ -805,18 +805,30 @@ $soc_wa = get_setting($conn, 'social_whatsapp', '');
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Lengkap</th>
-                                    <th>Tahun Alumni</th>
-                                    <th>Nomor HP</th>
+                                    <th>Peran / Status</th>
+                                    <th>Keterangan / Tingkat</th>
+                                    <th>Nomor HP / ID</th>
                                     <th>Waktu Terdaftar</th>
                                 </tr>
                             </thead>
                             <tbody id="alumniTableBody">
                                 <?php if (!empty($users_list)): ?>
-                                    <?php $no = 1; foreach ($users_list as $user_row): ?>
+                                    <?php $no = 1; foreach ($users_list as $user_row): 
+                                        $peran_val = $user_row['peran'] ?? 'Alumni';
+                                        $badge_class = 'badge-green';
+                                        if ($peran_val === 'Santri Aktif') $badge_class = 'badge-blue';
+                                        elseif ($peran_val === 'Asatidz / Guru') $badge_class = 'badge-gold';
+                                        elseif ($peran_val === 'Simpatisan / Umum') $badge_class = 'badge-purple';
+                                    ?>
                                         <tr>
                                             <td><?php echo $no++; ?></td>
                                             <td><strong><?php echo htmlspecialchars($user_row['nama_lengkap']); ?></strong></td>
-                                            <td><span class="badge-pill badge-green">Tahun <?php echo htmlspecialchars($user_row['tahun_alumni']); ?></span></td>
+                                            <td><span class="badge-pill <?php echo $badge_class; ?>"><?php echo htmlspecialchars($peran_val); ?></span></td>
+                                            <td>
+                                                <span style="font-size: 13px; color: var(--admin-text);">
+                                                    <?php echo htmlspecialchars($user_row['keterangan_tingkat'] ?: ('Alumni ' . $user_row['tahun_alumni'])); ?>
+                                                </span>
+                                            </td>
                                             <td><code><?php echo htmlspecialchars($user_row['nomor_hp']); ?></code></td>
                                             <td style="font-size: 12.5px; color: var(--admin-muted);">
                                                 <?php echo date('d-m-Y H:i', strtotime($user_row['created_at'])); ?>
@@ -825,7 +837,7 @@ $soc_wa = get_setting($conn, 'social_whatsapp', '');
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="5" style="text-align: center; color: var(--admin-muted); padding: 30px;">Belum ada data alumni yang terdaftar.</td>
+                                        <td colspan="6" style="text-align: center; color: var(--admin-muted); padding: 30px;">Belum ada data partisipan yang terdaftar.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>

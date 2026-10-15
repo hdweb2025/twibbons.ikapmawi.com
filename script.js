@@ -328,31 +328,190 @@
         setTimeout(draw, 150);
     });
 
-    // --- DOWNLOAD ---
+    // --- TOAST NOTIFICATION ---
+    function showToast(message) {
+        let toast = document.getElementById('twibbonToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'twibbonToast';
+            toast.className = 'twibbon-toast';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 4000);
+    }
+
+    // --- DIRECT DOWNLOAD TRIGGER ---
+    function triggerDirectDownload() {
+        if (!userImg.src) return;
+
+        const eventSlug = canvas.getAttribute('data-event-slug') || canvas.getAttribute('data-event-id') || 'frame';
+        const filename = 'twibbon-' + eventSlug + '.png';
+
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showToast('Twibbon berhasil diunduh! Terima kasih atas partisipasinya.');
+
+        // Silent tracking
+        const eventId = canvas.getAttribute('data-event-id');
+        if (eventId) {
+            fetch('/track_usage.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'event_id=' + encodeURIComponent(eventId)
+            }).catch(err => console.error(err));
+        }
+    }
+
+    // --- MODAL CONTROLLER & ROLE SELECTOR ---
+    window.selectRole = function(role) {
+        const inputRole = document.getElementById('selectedRole');
+        if (inputRole) inputRole.value = role;
+
+        const pills = document.querySelectorAll('.role-pill-btn');
+        pills.forEach(p => {
+            if (p.getAttribute('data-role') === role) {
+                p.classList.add('active');
+            } else {
+                p.classList.remove('active');
+            }
+        });
+
+        const fieldSantri = document.getElementById('fieldSantri');
+        const fieldAlumni = document.getElementById('fieldAlumni');
+        const fieldAsatidz = document.getElementById('fieldAsatidz');
+        const fieldSimpatisan = document.getElementById('fieldSimpatisan');
+
+        if (fieldSantri) fieldSantri.style.display = (role === 'Santri Aktif') ? 'block' : 'none';
+        if (fieldAlumni) fieldAlumni.style.display = (role === 'Alumni') ? 'block' : 'none';
+        if (fieldAsatidz) fieldAsatidz.style.display = (role === 'Asatidz / Guru') ? 'block' : 'none';
+        if (fieldSimpatisan) fieldSimpatisan.style.display = (role === 'Simpatisan / Umum') ? 'block' : 'none';
+    };
+
+    window.openParticipantModal = function() {
+        const modal = document.getElementById('participantModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => {
+                modal.classList.add('show');
+            });
+            setTimeout(() => {
+                const input = document.getElementById('modalNama');
+                if (input) input.focus();
+            }, 100);
+        }
+    };
+
+    window.closeParticipantModal = function() {
+        const modal = document.getElementById('participantModal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 250);
+        }
+    };
+
+    // Close on overlay backdrop click or Escape key
+    const modalOverlay = document.getElementById('participantModal');
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                window.closeParticipantModal();
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('show')) {
+                window.closeParticipantModal();
+            }
+        });
+    }
+
+    window.handleParticipantSubmit = function(e) {
+        e.preventDefault();
+        const errEl = document.getElementById('modalErrorMsg');
+        if (errEl) errEl.style.display = 'none';
+
+        const form = document.getElementById('participantForm');
+        const btn = document.getElementById('btnSubmitModal');
+        const btnText = btn ? btn.querySelector('.btn-text') : null;
+        const btnSpinner = btn ? btn.querySelector('.btn-spinner') : null;
+
+        const nama = document.getElementById('modalNama').value.trim();
+        if (!nama) {
+            if (errEl) {
+                errEl.textContent = 'Nama lengkap wajib diisi!';
+                errEl.style.display = 'block';
+            }
+            return;
+        }
+
+        if (btn) btn.disabled = true;
+        if (btnText) btnText.style.display = 'none';
+        if (btnSpinner) btnSpinner.style.display = 'inline-block';
+
+        const formData = new FormData(form);
+
+        fetch('/record_participant.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (btn) btn.disabled = false;
+            if (btnText) btnText.style.display = 'inline-block';
+            if (btnSpinner) btnSpinner.style.display = 'none';
+
+            if (data.status === 'success') {
+                localStorage.setItem('ikapmawi_participant_name', data.nama);
+                localStorage.setItem('ikapmawi_participant_role', data.peran);
+                canvas.setAttribute('data-logged-in', '1');
+
+                // Update usage counter
+                const usageEl = document.getElementById('usageCountDisplay');
+                if (usageEl) {
+                    const currentVal = parseInt(usageEl.textContent.trim()) || 0;
+                    usageEl.textContent = currentVal + 1;
+                }
+
+                window.closeParticipantModal();
+                triggerDirectDownload();
+            } else {
+                if (errEl) {
+                    errEl.textContent = data.message || 'Gagal menyimpan data partisipan.';
+                    errEl.style.display = 'block';
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Error recording participant:', err);
+            if (btn) btn.disabled = false;
+            if (btnText) btnText.style.display = 'inline-block';
+            if (btnSpinner) btnSpinner.style.display = 'none';
+            // Fail gracefully: tetap unduh jika koneksi bermasalah
+            window.closeParticipantModal();
+            triggerDirectDownload();
+        });
+    };
+
+    // --- DOWNLOAD BUTTON HANDLER ---
     if (downloadBtn) {
         downloadBtn.addEventListener('click', () => {
             if (!userImg.src) return;
 
-            // Generate filename based on event slug
-            const eventId = canvas.getAttribute('data-event-id');
-            const filename = 'twibbon-ikapmawi-' + (eventId || 'frame') + '.png';
-
-            const link = document.createElement('a');
-            link.download = filename;
-            link.href = canvas.toDataURL('image/png', 1.0);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            // Silent tracking usage
-            if (eventId) {
-                fetch('/track_usage.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'event_id=' + encodeURIComponent(eventId)
-                }).catch(err => console.error(err));
+            const isLoggedIn = (canvas.getAttribute('data-logged-in') === '1') || !!localStorage.getItem('ikapmawi_participant_name');
+            if (!isLoggedIn) {
+                window.openParticipantModal();
+            } else {
+                triggerDirectDownload();
             }
         });
     }
