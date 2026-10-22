@@ -92,13 +92,26 @@ try {
     $_SESSION['keterangan'] = $keterangan;
     $_SESSION['tahun'] = $tahun;
 
+    // 4. Set Persistent Cookie 6 Bulan (180 hari) agar bebas komplain isi ulang
+    $cookie_lifetime = 180 * 86400; // 180 hari
+    $cookie_data = json_encode([
+        'user_id' => $user_id,
+        'nama' => $nama,
+        'peran' => $peran,
+        'keterangan' => $keterangan,
+        'tahun' => $tahun
+    ]);
+    $is_secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
+    setcookie('ikapmawi_participant', $cookie_data, time() + $cookie_lifetime, '/', '', $is_secure, true);
+
     echo json_encode([
         'status' => 'success',
         'user_id' => $user_id,
         'nama' => $nama,
         'peran' => $peran,
         'keterangan' => $keterangan,
-        'tahun' => $tahun
+        'tahun' => $tahun,
+        'message' => 'Identitas berhasil disimpan untuk 6 bulan.'
     ]);
 
 } catch (Throwable $e) {

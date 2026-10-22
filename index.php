@@ -2,6 +2,18 @@
 session_start();
 include 'config.php';
 
+// Cek persistent cookie 6 bulan (180 hari) jika sesi aktif PHP sudah kadaluarsa
+if (!isset($_SESSION['user']) && isset($_COOKIE['ikapmawi_participant'])) {
+    $cookie_data = json_decode($_COOKIE['ikapmawi_participant'], true);
+    if ($cookie_data && !empty($cookie_data['nama'])) {
+        $_SESSION['user_id'] = intval($cookie_data['user_id'] ?? 0);
+        $_SESSION['user'] = $cookie_data['nama'];
+        $_SESSION['peran'] = $cookie_data['peran'] ?? 'Alumni';
+        $_SESSION['keterangan'] = $cookie_data['keterangan'] ?? ('Alumni ' . ($cookie_data['tahun'] ?? ''));
+        $_SESSION['tahun'] = $cookie_data['tahun'] ?? date('Y');
+    }
+}
+
 // Get event slug regardless of login status
 $event_slug = isset($_GET['event_slug']) ? $_GET['event_slug'] : null;
 $event = null;
@@ -68,11 +80,14 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
         <a href="/" style="display:inline-block; text-decoration:none;">
             <img src="/assets/logo_ikapmawi.webp" alt="Logo IKAPMAWI">
         </a>
-        <?php if (isset($_SESSION['user'])): ?>
-            <div class="user-badge">
-                Assalamualaikum, <b><?php echo htmlspecialchars($_SESSION['user']); ?></b> (<?php echo htmlspecialchars($_SESSION['keterangan'] ?? $_SESSION['peran'] ?? ('Alumni ' . ($_SESSION['tahun'] ?? ''))); ?>)
-            </div>
-        <?php endif; ?>
+        <div class="user-badge" id="userBadgeHeader" style="<?php echo isset($_SESSION['user']) ? 'display: inline-flex;' : 'display: none;'; ?>">
+            <span id="userBadgeText">
+                <?php if (isset($_SESSION['user'])): ?>
+                    Assalamualaikum, <b><?php echo htmlspecialchars($_SESSION['user']); ?></b> (<?php echo htmlspecialchars($_SESSION['keterangan'] ?? $_SESSION['peran'] ?? ('Alumni ' . ($_SESSION['tahun'] ?? ''))); ?>)
+                <?php endif; ?>
+            </span>
+            <button type="button" class="btn-switch-user" onclick="switchParticipantIdentity()" title="Bukan akun Anda? Ganti profil">(Bukan Anda? Ganti)</button>
+        </div>
     </header>
 
     <?php if ($event): // If a specific event is being viewed, render editor directly ?>
@@ -139,6 +154,15 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                             ↺ Reset
                         </button>
                     </div>
+                </div>
+
+                <!-- Status Profil Tersimpan (Smart Remembered 6 Bulan) -->
+                <div id="participantRememberedBox" class="participant-remembered-box" style="<?php echo isset($_SESSION['user']) ? 'display: flex;' : 'display: none;'; ?>">
+                    <div class="remembered-info">
+                        <span class="remembered-icon">👤</span>
+                        <span class="remembered-text">Mengunduh sebagai: <strong id="rememberedName"><?php echo htmlspecialchars($_SESSION['user'] ?? ''); ?></strong></span>
+                    </div>
+                    <button type="button" class="btn-switch-inline" onclick="switchParticipantIdentity()" title="Ganti profil partisipan">Ganti</button>
                 </div>
 
                 <!-- Tombol Download -->

@@ -106,11 +106,75 @@ body {
     border: 1px solid rgba(26, 92, 46, 0.15);
     border-radius: 30px;
     padding: 8px 18px;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
     margin: 0 auto 16px auto;
     text-align: center;
     font-size: 13.5px;
     color: var(--primary-color);
+}
+
+.btn-switch-user {
+    background: transparent;
+    border: none;
+    color: var(--danger-color);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0 4px;
+    transition: opacity 0.2s ease;
+}
+
+.btn-switch-user:hover {
+    opacity: 0.8;
+}
+
+.participant-remembered-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--text-dark);
+}
+
+.participant-remembered-box .remembered-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.participant-remembered-box .remembered-icon {
+    font-size: 15px;
+}
+
+.participant-remembered-box .btn-switch-inline {
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    color: var(--text-muted);
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.participant-remembered-box .btn-switch-inline:hover {
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+    background: #fff;
 }
 
 /* ==========================================================================

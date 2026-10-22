@@ -344,6 +344,71 @@
         }, 4000);
     }
 
+    // --- SMART PERSISTENT PROFILE (6 BULAN) ---
+    function getStoredProfile() {
+        try {
+            const raw = localStorage.getItem('ikapmawi_participant');
+            if (raw) return JSON.parse(raw);
+        } catch(e) {}
+        const legacyName = localStorage.getItem('ikapmawi_participant_name');
+        if (legacyName) {
+            return {
+                nama: legacyName,
+                peran: localStorage.getItem('ikapmawi_participant_role') || 'Alumni'
+            };
+        }
+        return null;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        const d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+
+    function syncProfileUI(profile) {
+        if (!profile || !profile.nama) return;
+
+        // Set logged-in state on canvas
+        canvas.setAttribute('data-logged-in', '1');
+
+        // Update header greeting if present
+        const headerBadge = document.getElementById('userBadgeHeader');
+        const headerText = document.getElementById('userBadgeText');
+        if (headerBadge && headerText) {
+            const ket = profile.keterangan || (profile.peran === 'Alumni' && profile.tahun ? 'Alumni ' + profile.tahun : profile.peran);
+            headerText.innerHTML = `Assalamualaikum, <b>${escapeHtml(profile.nama)}</b> (${escapeHtml(ket || 'Keluarga MWI')})`;
+            headerBadge.style.display = 'inline-flex';
+        }
+
+        // Update download card identity box
+        const rememberedBox = document.getElementById('participantRememberedBox');
+        const rememberedName = document.getElementById('rememberedName');
+        if (rememberedBox && rememberedName) {
+            rememberedName.textContent = profile.nama;
+            rememberedBox.style.display = 'flex';
+        }
+
+        // Pre-fill modal form
+        const inputNama = document.getElementById('modalNama');
+        if (inputNama && !inputNama.value) inputNama.value = profile.nama;
+
+        if (profile.peran && typeof window.selectRole === 'function') {
+            window.selectRole(profile.peran);
+        }
+        if (profile.tahun && profile.peran === 'Alumni') {
+            const selTahun = document.getElementById('selectTahunAlumni');
+            if (selTahun) selTahun.value = profile.tahun;
+        }
+    }
+
+    // Jalankan sinkronisasi profil saat awal render
+    const initialProfile = getStoredProfile();
+    if (initialProfile) {
+        syncProfileUI(initialProfile);
+    }
+
     // --- DIRECT DOWNLOAD TRIGGER ---
     function triggerDirectDownload() {
         if (!userImg.src) return;
@@ -358,18 +423,54 @@
         link.click();
         document.body.removeChild(link);
 
-        showToast('Twibbon berhasil diunduh! Terima kasih atas partisipasinya.');
+        const profile = getStoredProfile();
+        const displayName = profile ? profile.nama : '';
+        const greetText = displayName ? ` Sahabat ${displayName}` : '';
+        showToast(`Twibbon berhasil diunduh! Alhamdulillah, terima kasih atas partisipasinya,${greetText}.`);
 
-        // Silent tracking
+        // Silent tracking ke database
         const eventId = canvas.getAttribute('data-event-id');
         if (eventId) {
+            const params = new URLSearchParams();
+            params.append('event_id', eventId);
+            if (profile && profile.user_id) {
+                params.append('user_id', profile.user_id);
+            }
             fetch('/track_usage.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'event_id=' + encodeURIComponent(eventId)
+                body: params.toString()
             }).catch(err => console.error(err));
         }
     }
+
+    // --- SWITCH PARTICIPANT IDENTITY (GANTI AKUN/HP PINJAMAN) ---
+    window.switchParticipantIdentity = function() {
+        // Hapus penyimpanan lokal
+        localStorage.removeItem('ikapmawi_participant');
+        localStorage.removeItem('ikapmawi_participant_name');
+        localStorage.removeItem('ikapmawi_participant_role');
+
+        // Reset atribut login di canvas
+        canvas.setAttribute('data-logged-in', '0');
+
+        // Sembunyikan badge & kotak profil tersimpan
+        const headerBadge = document.getElementById('userBadgeHeader');
+        if (headerBadge) headerBadge.style.display = 'none';
+
+        const rememberedBox = document.getElementById('participantRememberedBox');
+        if (rememberedBox) rememberedBox.style.display = 'none';
+
+        // Reset input form
+        const inputNama = document.getElementById('modalNama');
+        if (inputNama) inputNama.value = '';
+
+        // Panggil endpoint reset session & cookie secara asinkron
+        fetch('/logout.php?action=ajax_reset', { method: 'GET' }).catch(() => {});
+
+        // Buka modal agar bisa diisi identitas baru
+        window.openParticipantModal();
+    };
 
     // --- MODAL CONTROLLER & ROLE SELECTOR ---
     window.selectRole = function(role) {
@@ -471,9 +572,17 @@
             if (btnSpinner) btnSpinner.style.display = 'none';
 
             if (data.status === 'success') {
+                const profile = {
+                    user_id: data.user_id,
+                    nama: data.nama,
+                    peran: data.peran,
+                    keterangan: data.keterangan,
+                    tahun: data.tahun
+                };
+                localStorage.setItem('ikapmawi_participant', JSON.stringify(profile));
                 localStorage.setItem('ikapmawi_participant_name', data.nama);
                 localStorage.setItem('ikapmawi_participant_role', data.peran);
-                canvas.setAttribute('data-logged-in', '1');
+                syncProfileUI(profile);
 
                 // Update usage counter
                 const usageEl = document.getElementById('usageCountDisplay');
@@ -502,15 +611,16 @@
         });
     };
 
-    // --- DOWNLOAD BUTTON HANDLER ---
+    // --- DOWNLOAD BUTTON HANDLER (ZERO-FRICTION FOR RETURNING USERS) ---
     if (downloadBtn) {
         downloadBtn.addEventListener('click', () => {
             if (!userImg.src) return;
 
-            const isLoggedIn = (canvas.getAttribute('data-logged-in') === '1') || !!localStorage.getItem('ikapmawi_participant_name');
+            const isLoggedIn = (canvas.getAttribute('data-logged-in') === '1') || !!getStoredProfile();
             if (!isLoggedIn) {
                 window.openParticipantModal();
             } else {
+                // Pengguna yang sudah pernah mengisi langsung unduh tanpa modal!
                 triggerDirectDownload();
             }
         });
