@@ -112,6 +112,15 @@ if (mysqli_num_rows($creative_talk_check) == 0) {
     mysqli_query($conn, "INSERT INTO events (name, slug, template, hole_x, hole_y, hole_w, hole_h) VALUES ('IKAPMAWI Creative Talk 2026: From Ideas to Books', 'creative-talk-2026', 'uploads/templates/twibbon-ikapmawi-creative-talk-2026.png', 20, 390, 680, 600)");
 }
 
+// Auto-add Hari Santri 2026 event if not exists
+$hari_santri_check = mysqli_query($conn, "SELECT id FROM events WHERE slug = 'hari-santri-2026'");
+if (mysqli_num_rows($hari_santri_check) == 0) {
+    mysqli_query($conn, "INSERT INTO events (name, slug, template, hole_x, hole_y, hole_w, hole_h) VALUES ('Hari Santri Nasional 2026: Santri Menguatkan Negeri, Menuju Indonesia Emas', 'hari-santri-2026', 'uploads/templates/twibbon-ikapmawi-hari-santri-2026.png', 56, 291, 513, 665)");
+} else {
+    // Ensure coordinates and template path are up to date
+    mysqli_query($conn, "UPDATE events SET name = 'Hari Santri Nasional 2026: Santri Menguatkan Negeri, Menuju Indonesia Emas', template = 'uploads/templates/twibbon-ikapmawi-hari-santri-2026.png', hole_x = 56, hole_y = 291, hole_w = 513, hole_h = 665 WHERE slug = 'hari-santri-2026'");
+}
+
 // Create settings table for dynamic configuration
 mysqli_query($conn, "CREATE TABLE IF NOT EXISTS settings (
     setting_key VARCHAR(50) PRIMARY KEY,
