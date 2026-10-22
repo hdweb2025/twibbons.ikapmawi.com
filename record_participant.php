@@ -77,9 +77,9 @@ try {
         mysqli_stmt_close($stmt_insert);
     }
 
-    // 2. Catat penggunaan event di tabel event_usage
+    // 2. Catat penggunaan event di tabel event_usage (gunakan ON DUPLICATE KEY UPDATE agar user bisa unduh berulang kali tanpa error duplicate)
     if ($user_id > 0 && $event_id > 0) {
-        $stmt_usage = mysqli_prepare($conn, "INSERT INTO event_usage (user_id, event_id) VALUES (?, ?)");
+        $stmt_usage = mysqli_prepare($conn, "INSERT INTO event_usage (user_id, event_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE created_at = CURRENT_TIMESTAMP");
         mysqli_stmt_bind_param($stmt_usage, "ii", $user_id, $event_id);
         mysqli_stmt_execute($stmt_usage);
         mysqli_stmt_close($stmt_usage);

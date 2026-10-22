@@ -184,13 +184,13 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                     
                     <label class="form-label">Status Anda di MWI:</label>
                     <div class="role-selector-grid">
-                        <button type="button" class="role-pill-btn active" data-role="Santri Aktif" onclick="selectRole('Santri Aktif')">
-                            <span class="role-icon">🎓</span>
-                            <span class="role-title">Santri Aktif</span>
-                        </button>
-                        <button type="button" class="role-pill-btn" data-role="Alumni" onclick="selectRole('Alumni')">
+                        <button type="button" class="role-pill-btn active" data-role="Alumni" onclick="selectRole('Alumni')">
                             <span class="role-icon">🤝</span>
                             <span class="role-title">Alumni</span>
+                        </button>
+                        <button type="button" class="role-pill-btn" data-role="Santri Aktif" onclick="selectRole('Santri Aktif')">
+                            <span class="role-icon">🎓</span>
+                            <span class="role-title">Santri Aktif</span>
                         </button>
                         <button type="button" class="role-pill-btn" data-role="Asatidz / Guru" onclick="selectRole('Asatidz / Guru')">
                             <span class="role-icon">📖</span>
@@ -201,7 +201,7 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                             <span class="role-title">Wali / Umum</span>
                         </button>
                     </div>
-                    <input type="hidden" id="selectedRole" name="peran" value="Santri Aktif">
+                    <input type="hidden" id="selectedRole" name="peran" value="Alumni">
 
                     <!-- Input Nama Lengkap -->
                     <div class="form-group-modal">
@@ -210,8 +210,18 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                     </div>
 
                     <!-- Dynamic Role-Specific Fields -->
-                    <!-- 1. Santri Aktif -->
-                    <div id="fieldSantri" class="role-dynamic-field">
+                    <!-- 1. Alumni (Default Aktif untuk Keluarga Besar IKAPMAWI) -->
+                    <div id="fieldAlumni" class="role-dynamic-field">
+                        <label for="selectTahunAlumni" class="form-label">Tahun Kelulusan Alumni <span class="required-star">*</span></label>
+                        <select id="selectTahunAlumni" name="tahun_alumni" class="modal-select">
+                            <?php for ($y = date('Y'); $y >= 1950; $y--): ?>
+                                <option value="<?php echo $y; ?>">Alumni Tahun <?php echo $y; ?></option>
+                            <?php endfor; ?>
+                        </select>
+                    </div>
+
+                    <!-- 2. Santri Aktif -->
+                    <div id="fieldSantri" class="role-dynamic-field" style="display: none;">
                         <label for="selectJenjangSantri" class="form-label">Jenjang & Kelas Santri <span class="required-star">*</span></label>
                         <select id="selectJenjangSantri" name="keterangan_santri" class="modal-select">
                             <option value="Santri MA WI - Kelas 10">Santri MA WI Kebarongan - Kelas 10</option>
@@ -221,16 +231,6 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                             <option value="Santri MTs WI - Kelas 8">Santri MTs WI Kebarongan - Kelas 8</option>
                             <option value="Santri MTs WI - Kelas 9">Santri MTs WI Kebarongan - Kelas 9</option>
                             <option value="Santri Pondok Pesantren MWI">Santri Pondok Pesantren MWI</option>
-                        </select>
-                    </div>
-
-                    <!-- 2. Alumni -->
-                    <div id="fieldAlumni" class="role-dynamic-field" style="display: none;">
-                        <label for="selectTahunAlumni" class="form-label">Tahun Kelulusan Alumni <span class="required-star">*</span></label>
-                        <select id="selectTahunAlumni" name="tahun_alumni" class="modal-select">
-                            <?php for ($y = date('Y'); $y >= 1950; $y--): ?>
-                                <option value="<?php echo $y; ?>">Alumni Tahun <?php echo $y; ?></option>
-                            <?php endfor; ?>
                         </select>
                     </div>
 
@@ -253,16 +253,6 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                             <option value="Simpatisan / Sahabat IKAPMAWI">Simpatisan / Sahabat IKAPMAWI</option>
                             <option value="Tamu Undangan Talkshow / Umum">Tamu Undangan Talkshow / Umum</option>
                         </select>
-                    </div>
-
-                    <!-- Nomor WhatsApp (Opsional) -->
-                    <div class="form-group-modal">
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <label for="modalHp" class="form-label">Nomor WhatsApp</label>
-                            <span class="label-optional">Boleh dikosongkan</span>
-                        </div>
-                        <input type="tel" id="modalHp" name="hp" class="modal-input" placeholder="08xxxxxxxxxx (Opsional)" autocomplete="tel">
-                        <div class="modal-help-text">Jika diisi, nomor hanya digunakan untuk silaturahmi & info agenda madrasah.</div>
                     </div>
 
                     <div id="modalErrorMsg" class="modal-alert-error" style="display: none;"></div>
