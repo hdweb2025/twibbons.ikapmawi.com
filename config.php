@@ -75,6 +75,29 @@ if (mysqli_num_rows($check_admin_column) == 0) {
     mysqli_query($conn, "ALTER TABLE users ADD COLUMN is_admin TINYINT(1) DEFAULT 0");
 }
 
+// Check and add Google Auth & Profile columns in users table
+$cols_to_add = [
+    'email' => "VARCHAR(255) NULL",
+    'google_id' => "VARCHAR(100) NULL",
+    'avatar' => "VARCHAR(500) NULL",
+    'peran' => "VARCHAR(100) DEFAULT 'Alumni'",
+    'keterangan_tingkat' => "VARCHAR(255) NULL"
+];
+foreach ($cols_to_add as $c_name => $c_def) {
+    $col_check = mysqli_query($conn, "SHOW COLUMNS FROM users LIKE '$c_name'");
+    if (mysqli_num_rows($col_check) == 0) {
+        mysqli_query($conn, "ALTER TABLE users ADD COLUMN $c_name $c_def");
+    }
+}
+
+// Ensure nomor_hp is nullable (for Google Sign-In users who don't provide phone numbers)
+$hp_col = mysqli_query($conn, "SHOW COLUMNS FROM users LIKE 'nomor_hp'");
+if ($row_hp = mysqli_fetch_assoc($hp_col)) {
+    if (isset($row_hp['Null']) && strtoupper($row_hp['Null']) === 'NO') {
+        mysqli_query($conn, "ALTER TABLE users MODIFY COLUMN nomor_hp VARCHAR(50) NULL");
+    }
+}
+
 // Create a default admin account if it doesn't exist
 $admin_hp = '081234567890'; // Ganti dengan nomor HP admin
 $admin_pass = 'admin123'; // Ganti dengan password yang kuat
@@ -139,6 +162,12 @@ if ($row_col = mysqli_fetch_assoc($check_setting_col)) {
 $setting_check = mysqli_query($conn, "SELECT setting_value FROM settings WHERE setting_key = 'require_registration'");
 if (mysqli_num_rows($setting_check) == 0) {
     mysqli_query($conn, "INSERT INTO settings (setting_key, setting_value) VALUES ('require_registration', '0')"); // 0 = nonaktifkan (quick join)
+}
+
+// Insert default google_client_id setting if not exists
+$check_gclient = mysqli_query($conn, "SELECT setting_value FROM settings WHERE setting_key = 'google_client_id'");
+if (mysqli_num_rows($check_gclient) == 0) {
+    mysqli_query($conn, "INSERT INTO settings (setting_key, setting_value) VALUES ('google_client_id', '')");
 }
 
 // Insert default social media settings (empty by default)

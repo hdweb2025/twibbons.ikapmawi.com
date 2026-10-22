@@ -461,15 +461,132 @@
         const rememberedBox = document.getElementById('participantRememberedBox');
         if (rememberedBox) rememberedBox.style.display = 'none';
 
-        // Reset input form
+        // Reset input form & Google state
         const inputNama = document.getElementById('modalNama');
-        if (inputNama) inputNama.value = '';
+        if (inputNama) {
+            inputNama.value = '';
+            const groupNama = inputNama.closest('.form-group-modal');
+            if (groupNama) groupNama.style.display = 'block';
+        }
+
+        const tokenInput = document.getElementById('googleCredentialToken');
+        if (tokenInput) tokenInput.value = '';
+
+        const googleSection = document.getElementById('googleAuthSection');
+        if (googleSection) googleSection.style.display = 'flex';
+
+        const googleBanner = document.getElementById('googleProfileBanner');
+        if (googleBanner) googleBanner.style.display = 'none';
 
         // Panggil endpoint reset session & cookie secara asinkron
         fetch('/logout.php?action=ajax_reset', { method: 'GET' }).catch(() => {});
 
         // Buka modal agar bisa diisi identitas baru
         window.openParticipantModal();
+    };
+
+    // --- GOOGLE SIGN-IN CREDENTIAL HANDLER ---
+    window.handleGoogleCredentialResponse = function(response) {
+        if (!response || !response.credential) return;
+
+        const errEl = document.getElementById('modalErrorMsg');
+        if (errEl) errEl.style.display = 'none';
+
+        const btn = document.getElementById('btnSubmitModal');
+        const btnText = btn ? btn.querySelector('.btn-text') : null;
+        const btnSpinner = btn ? btn.querySelector('.btn-spinner') : null;
+
+        if (btn) btn.disabled = true;
+        if (btnText) btnText.style.display = 'none';
+        if (btnSpinner) {
+            btnSpinner.textContent = 'Memverifikasi akun Google...';
+            btnSpinner.style.display = 'inline-block';
+        }
+
+        const eventId = canvas.getAttribute('data-event-id') || '0';
+        const formData = new URLSearchParams();
+        formData.append('credential', response.credential);
+        formData.append('event_id', eventId);
+
+        // Simpan token Google di hidden field
+        const tokenInput = document.getElementById('googleCredentialToken');
+        if (tokenInput) tokenInput.value = response.credential;
+
+        fetch('/auth/google_login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (btn) btn.disabled = false;
+            if (btnText) btnText.style.display = 'inline-block';
+            if (btnSpinner) btnSpinner.style.display = 'none';
+
+            if (data.status === 'success') {
+                const profile = {
+                    user_id: data.user_id,
+                    nama: data.nama,
+                    peran: data.peran,
+                    keterangan: data.keterangan,
+                    tahun: data.tahun,
+                    avatar: data.avatar,
+                    auth_provider: 'google'
+                };
+                localStorage.setItem('ikapmawi_participant', JSON.stringify(profile));
+                localStorage.setItem('ikapmawi_participant_name', data.nama);
+                localStorage.setItem('ikapmawi_participant_role', data.peran);
+                syncProfileUI(profile);
+
+                // Update usage counter
+                const usageEl = document.getElementById('usageCountDisplay');
+                if (usageEl) {
+                    const currentVal = parseInt(usageEl.textContent.trim()) || 0;
+                    usageEl.textContent = currentVal + 1;
+                }
+
+                window.closeParticipantModal();
+                triggerDirectDownload();
+            } else if (data.status === 'need_role') {
+                // User Google baru / belum tentukan peran -> buka selector peran
+                const googleSection = document.getElementById('googleAuthSection');
+                if (googleSection) googleSection.style.display = 'none';
+
+                const banner = document.getElementById('googleProfileBanner');
+                const avatarImg = document.getElementById('googleAvatarImg');
+                const nameEl = document.getElementById('googleProfileName');
+                if (banner && avatarImg && nameEl) {
+                    avatarImg.src = data.avatar || '/assets/icon.png';
+                    nameEl.textContent = data.nama + (data.email ? ' (' + data.email + ')' : '');
+                    banner.style.display = 'flex';
+                }
+
+                const inputNama = document.getElementById('modalNama');
+                if (inputNama) {
+                    inputNama.value = data.nama;
+                    const groupNama = inputNama.closest('.form-group-modal');
+                    if (groupNama) groupNama.style.display = 'none';
+                }
+
+                if (btnText) btnText.textContent = 'Simpan & Unduh Twibbon ⬇';
+                showToast('Akun Google terhubung! Silakan pilih status Anda di MWI.');
+            } else {
+                if (errEl) {
+                    errEl.textContent = data.message || 'Gagal masuk dengan Google.';
+                    errEl.style.display = 'block';
+                }
+            }
+        })
+        .catch(err => {
+            console.error('Error Google Sign-In:', err);
+            if (btn) btn.disabled = false;
+            if (btnText) btnText.style.display = 'inline-block';
+            if (btnSpinner) btnSpinner.style.display = 'none';
+            if (errEl) {
+                errEl.textContent = 'Koneksi ke Google terganggu. Silakan isi form manual di bawah.';
+                errEl.style.display = 'block';
+            }
+        });
     };
 
     // --- MODAL CONTROLLER & ROLE SELECTOR ---
@@ -559,9 +676,15 @@
         if (btnText) btnText.style.display = 'none';
         if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
-        const formData = new FormData(form);
+        const googleToken = document.getElementById('googleCredentialToken') ? document.getElementById('googleCredentialToken').value : '';
+        const endpoint = googleToken ? '/auth/google_login.php' : '/record_participant.php';
 
-        fetch('/record_participant.php', {
+        const formData = new FormData(form);
+        if (googleToken) {
+            formData.append('credential', googleToken);
+        }
+
+        fetch(endpoint, {
             method: 'POST',
             body: formData
         })
@@ -577,7 +700,9 @@
                     nama: data.nama,
                     peran: data.peran,
                     keterangan: data.keterangan,
-                    tahun: data.tahun
+                    tahun: data.tahun,
+                    avatar: data.avatar || '',
+                    auth_provider: googleToken ? 'google' : 'manual'
                 };
                 localStorage.setItem('ikapmawi_participant', JSON.stringify(profile));
                 localStorage.setItem('ikapmawi_participant_name', data.nama);

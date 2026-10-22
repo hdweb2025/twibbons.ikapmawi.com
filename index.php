@@ -26,6 +26,9 @@ if ($event_slug) {
 // Check require_registration setting
 $require_registration = get_setting($conn, 'require_registration', '0') === '1';
 
+// Google OAuth Client ID
+$google_client_id = get_setting($conn, 'google_client_id', '');
+
 // Social media links for footer
 $soc_fb = get_setting($conn, 'social_facebook', '');
 $soc_ig = get_setting($conn, 'social_instagram', '');
@@ -73,6 +76,9 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="icon" href="/assets/icon.png">
     <link rel="stylesheet" href="/style.css">
+    <?php if (!empty($google_client_id)): ?>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <?php endif; ?>
 </head>
 <body>
 <div class="container wide-container">
@@ -199,12 +205,47 @@ $events = mysqli_query($conn, "SELECT * FROM events ORDER BY created_at DESC");
                 <div class="twibbon-modal-header">
                     <span class="modal-badge-sanad">Keluarga Besar MWI Kebarongan</span>
                     <h3 class="twibbon-modal-title">Satu Langkah Menuju Twibbon Anda</h3>
-                    <p class="twibbon-modal-subtitle">Silakan isi identitas singkat untuk pencatatan partisipasi keluarga besar MWI.</p>
+                    <p class="twibbon-modal-subtitle">Silakan masuk dengan akun Google atau isi identitas singkat keluarga besar MWI.</p>
                     <button type="button" class="btn-modal-close" onclick="closeParticipantModal()" aria-label="Tutup">&times;</button>
+                </div>
+
+                <?php if (!empty($google_client_id)): ?>
+                <!-- 1-Tap Google Sign-In -->
+                <div class="google-auth-section" id="googleAuthSection">
+                    <div id="g_id_onload"
+                        data-client_id="<?php echo htmlspecialchars($google_client_id); ?>"
+                        data-context="signin"
+                        data-ux_mode="popup"
+                        data-callback="handleGoogleCredentialResponse"
+                        data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin" 
+                        data-type="standard" 
+                        data-size="large" 
+                        data-theme="outline" 
+                        data-text="continue_with" 
+                        data-shape="pill" 
+                        data-logo_alignment="left"
+                        data-width="100%">
+                    </div>
+                    <div class="modal-auth-divider">
+                        <span>atau isi singkat manual</span>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- Banner Akun Google Terhubung (Tampil jika perlu pilih peran) -->
+                <div id="googleProfileBanner" class="google-profile-banner" style="display: none;">
+                    <img id="googleAvatarImg" src="/assets/icon.png" alt="Google Avatar" class="google-avatar-img">
+                    <div class="google-profile-details">
+                        <div class="google-greeting-small">Terhubung via Google:</div>
+                        <div class="google-profile-name" id="googleProfileName"></div>
+                    </div>
                 </div>
 
                 <form id="participantForm" class="twibbon-modal-form" onsubmit="handleParticipantSubmit(event)">
                     <input type="hidden" id="participantEventId" name="event_id" value="<?php echo $event['id']; ?>">
+                    <input type="hidden" id="googleCredentialToken" name="google_credential" value="">
                     
                     <label class="form-label">Status Anda di MWI:</label>
                     <div class="role-selector-grid">
