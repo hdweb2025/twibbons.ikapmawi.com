@@ -170,6 +170,12 @@ if (mysqli_num_rows($check_gclient) == 0) {
     mysqli_query($conn, "INSERT INTO settings (setting_key, setting_value) VALUES ('google_client_id', '')");
 }
 
+// Insert default sync_secret_key for BigQuery & Master Data Connector
+$check_sync = mysqli_query($conn, "SELECT setting_value FROM settings WHERE setting_key = 'sync_secret_key'");
+if (mysqli_num_rows($check_sync) == 0) {
+    mysqli_query($conn, "INSERT INTO settings (setting_key, setting_value) VALUES ('sync_secret_key', 'ikapmawi_etl_secret_9f83a71b2d4c6e80')");
+}
+
 // Insert default social media settings (empty by default)
 $default_socials = [
     'social_facebook' => '',
